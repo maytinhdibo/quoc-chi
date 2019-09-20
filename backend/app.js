@@ -58,4 +58,5 @@ db.sequelize.sync({ force: false }).then(function () {
 
 app.listen(3030, function () {
   console.log("Express is running on port 3030");
+  //demo
 });
