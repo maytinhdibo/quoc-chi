@@ -58,7 +58,7 @@ class Volume extends React.Component {
             }, {
                 Header: 'Tên chương',
                 accessor: 'name',
-                Cell: props => <Link to={"/dashboard/chapter/detail/" + props.original.id} className='number'>{props.original.name}</Link>
+                Cell: props => <Link to={"/dashboard/chapters/detail/" + props.original.id} className='number'>{props.original.name}</Link>
 
             }, {
                 Header: 'Số mục đã hoàn thành',

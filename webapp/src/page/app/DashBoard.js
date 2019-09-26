@@ -169,7 +169,7 @@ class DashBoard extends React.Component {
         main: NewVolume
       },
       {
-        path: "/dashboard/chapter/detail/:id",
+        path: "/dashboard/chapters/detail/:id",
         sidebar: () => <Breadcrumb data={[{
           path: "/dashboard/books",
           name: "Quản lý tập"
