@@ -14,7 +14,7 @@ import {
 import ReactLoading from "react-loading";
 import ReactTable from "react-table";
 import Pagination from "../../components/Pagination";
-import duplicateAPI from "../../services/duplicate";
+import duplicateAPI from "../../services/duplicate.services";
 import formAPI from "../../services/form.services";
 import { alertText } from "../../components/Alert";
 
@@ -153,7 +153,10 @@ class CheckDuplicate extends React.Component {
         accessor: "section",
         style: { "font-weight": "700" },
         Cell: props => (
-          <Link className="name" to={"/dashboard/user/" + props.original.id}>
+          <Link
+            className="name"
+            to={"/dashboard/sections/duplicate/" + props.original.section_id}
+          >
             <span>
               {props.original.section_name != null
                 ? props.original.section_name
@@ -208,6 +211,17 @@ class CheckDuplicate extends React.Component {
         Cell: props => (
           <span className="number">{props.original.count - 1}</span>
         )
+      },
+      {
+        style: { "font-weight": "700" },
+        Cell: props => (
+          <Link
+            className="name"
+            to={"/dashboard/sections/duplicate/" + props.original.section_id}
+          >
+            <button className="qc-btn">Xem chi tiết</button>
+          </Link>
+        )
       }
     ];
 
@@ -216,36 +230,6 @@ class CheckDuplicate extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">{language.checkduplicate}</span>
-            <span className="qc-header-tool">
-              <button>
-                Hành động{" "}
-                <span className="icon">
-                  <FontAwesomeIcon icon={faChevronDown} />
-                </span>
-              </button>
-              <div className="tool-dropdown">
-                <div className="content">
-                  <ul class="qc-dropdown-ul">
-                    <Link to="new">
-                      <li>
-                        <span className="icon">
-                          <FontAwesomeIcon icon={faPlus} />
-                        </span>
-                        Thêm người dùng
-                      </li>
-                    </Link>
-                    <Link to="/">
-                      <li>
-                        <span className="icon">
-                          <FontAwesomeIcon icon={faChartBar} />
-                        </span>
-                        Thống kê
-                      </li>
-                    </Link>
-                  </ul>
-                </div>
-              </div>
-            </span>
           </div>
           <div className="qc-content">
             <Row>

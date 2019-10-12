@@ -1,10 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const auth = require('../../middleware/verify_access_token');
-const controller = require('../../controller/volume.controller')
+const auth = require("../../middleware/verify_access_token");
+const controller = require("../../controller/volume.controller");
 
-
-router.post("/new", controller.newVolume);
-router.post("/edit", controller.editVolume);
+router.post("/new", auth.verifyAccessToken, controller.newVolume);
+router.post("/edit", auth.verifyAccessToken, controller.editVolume);
 
 module.exports = router;

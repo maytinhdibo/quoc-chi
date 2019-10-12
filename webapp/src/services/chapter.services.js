@@ -5,7 +5,8 @@ const createChapter = (data,volumeid) => {
     const request = new Request(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.token
         },
         body: JSON.stringify(data)
     })
@@ -15,15 +16,15 @@ const createChapter = (data,volumeid) => {
         });
 };
 
-//need edit
-const editChapter = (databook, id) => {
-    const url = app.API_URL + `/volume/edit?id=`+id;
+const editChapter = (data, id) => {
+    const url = app.API_URL + `/chapter/edit?id=`+id;
     const request = new Request(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.token
         },
-        body: JSON.stringify(databook)
+        body: JSON.stringify(data)
     })
     return fetch(request)
         .then(response => {

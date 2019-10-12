@@ -91,13 +91,45 @@ const getChapter = (chapterid) => {
         });
 }
 
+const getSections = (chapterid) => {
+    const url = app.API_URL + `/analytics/sections?id=`+chapterid;
+    const request = new Request(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.token
+        }
+    })
+    return fetch(request)
+        .then(response => {
+            return response.json();
+        });
+}
+
+const getSection = (sectionId) => {
+    const url = app.API_URL + `/analytics/section?id=`+sectionId;
+    const request = new Request(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.token
+        }
+    })
+    return fetch(request)
+        .then(response => {
+            return response.json();
+        });
+}
+
 const analyticsAPI = {
     getBooks,
     getBook,
     getVolumes,
     getVolume,
     getChapters,
-    getChapter
+    getChapter,
+    getSections,
+    getSection
 }
 
 export default analyticsAPI;

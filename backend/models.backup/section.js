@@ -14,9 +14,6 @@ module.exports = function(sequelize, Sequelize) {
     description: {
       type: Sequelize.STRING
     },
-    content: {
-      type: Sequelize.STRING
-    },
     chapterId: {
       field: "chapter_id",
       type: Sequelize.STRING
@@ -30,10 +27,6 @@ module.exports = function(sequelize, Sequelize) {
   Section.associate = function(models) {
     Section.belongsToMany(models.user, { through: models.sections_user });
     Section.belongsTo(models.chapter);
-
-    Section.belongsToMany(models.documentation, {
-      through: models.sections_docs_logs
-    });
 
     Section.belongsTo(models.user, {
       foreignKey: "reviewer_id",

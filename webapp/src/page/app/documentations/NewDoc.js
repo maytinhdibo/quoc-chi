@@ -32,8 +32,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import '@ckeditor/ckeditor5-build-classic/build/translations/vi';
-
 
 const editorConfiguration = {
     plugins: [Essentials, Bold, Clipboard, Table, Alignment, FontSize, FontColor, FontFamily, Heading, Table, TableToolbar, Italic, Paragraph, Image, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, Base64UploadAdapter],
@@ -192,7 +190,7 @@ class NewDoc extends React.Component {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label>Đều xuất nơi bảo quản</Label>
+                        <Label>Đề xuất nơi bảo quản</Label>
                         <br />
                         <Label><input type="checkbox" /> Bảo quản tại Nhiệm vụ thành phần</Label>
                         <br />

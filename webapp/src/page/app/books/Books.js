@@ -36,35 +36,6 @@ class Books extends React.Component {
         } else return "";
     }
     render() {
-        const data = [{
-            name: 'Nguyen Van A',
-            age: 26,
-            friend: {
-                name: 'Do Van C',
-                age: 23,
-            }
-        }, {
-            name: 'Dao Thi B',
-            age: 22,
-            friend: {
-                name: 'Ngo Trung V',
-                age: 24,
-            }
-        }, {
-            name: 'Tran Duc C',
-            age: 25,
-            friend: {
-                name: 'Ngo Thanh E',
-                age: 25,
-            }
-        }, {
-            name: 'Le Tien N',
-            age: 27,
-            friend: {
-                name: 'Cao Cong G',
-                age: 24,
-            }
-        }];
 
         const columns = [
             {

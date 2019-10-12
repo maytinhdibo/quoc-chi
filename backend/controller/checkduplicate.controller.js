@@ -6,11 +6,11 @@ const checkDuplicate = async (req, res) => {
     const { book, volume, chapter } = req.body;
     let filter = "";
     if (chapter) {
-      filter = "c.id = " + chapter;
+      filter = "WHERE c.id = " + chapter;
     } else if (volume) {
-      filter = "v.id = " + volume;
+      filter = "WHERE v.id = " + volume;
     } else if (book) {
-      filter = "b.id = " + book;
+      filter = "WHERE b.id = " + book;
     }
 
     const filterIn =
@@ -19,7 +19,7 @@ const checkDuplicate = async (req, res) => {
       LEFT JOIN chapters c ON s.chapter_id=c.id
       LEFT JOIN volumes v ON c.volume_id=v.id
       LEFT JOIN books b ON v.book_id=b.id
-      WHERE ` +
+      ` +
       filter +
       ` GROUP BY s.name
     `;
@@ -59,6 +59,31 @@ const checkDuplicate = async (req, res) => {
   }
 };
 
+const listDuplicate = async (req, res) => {
+  try {
+    const { id } = req.query;
+    let sections = await db.sequelize.query(
+      `SELECT s.id as section_id, s.name as section_name, 
+      c.id as chapter_id, c.name as chapter_name, 
+      v.id as volume_id, v.name as volume_name, 
+      b.id as book_id, b.name as book_name
+      FROM sections s
+      LEFT JOIN chapters c ON s.chapter_id=c.id
+      LEFT JOIN volumes v ON c.volume_id=v.id
+      LEFT JOIN books b ON v.book_id=b.id
+      ` +
+        `WHERE s.name=(SELECT name FROM sections WHERE id = ` +
+        id +
+        ` LIMIT 1)`,
+      {
+        type: db.sequelize.QueryTypes.SELECT
+      }
+    );
+    res.json(response.success(sections));
+  } catch (e) {}
+};
+
 module.exports = {
-  checkDuplicate
+  checkDuplicate,
+  listDuplicate
 };
