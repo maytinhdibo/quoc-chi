@@ -1,9 +1,5 @@
 const db = require("../models");
 const response = require("../utils/response");
-const sercetkey = require("../config/secretkey");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const mergeByKey = require("array-merge-by-key");
 var _ = require("lodash");
 var stringify = require("json-stringify-safe");
 

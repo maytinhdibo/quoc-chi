@@ -1,7 +1,7 @@
 const db = require('./../models');
 const response = require('../utils/response');
 const sercetkey = require('../config/secretkey');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 

@@ -1,7 +1,6 @@
 const db = require("../models");
 const response = require("../utils/response");
 const sercetkey = require("../config/secretkey");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mergeByKey = require("array-merge-by-key");
 const htmlToText = require("html-to-text");
