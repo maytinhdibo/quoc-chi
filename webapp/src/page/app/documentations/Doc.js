@@ -5,6 +5,7 @@ import { Col, Row } from "reactstrap";
 import Pagination from "../../../components/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactLoading from "react-loading";
+import moment from "moment";
 import {
   faPlus,
   faFilePdf,
@@ -13,14 +14,13 @@ import {
   faEdit
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
-import duplicateAPI from "../../../services/duplicate.services";
+import docAPI from "../../../services/documentation.services";
 
-class Section extends React.Component {
+class Doc extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      dataList: [],
       filter: "",
       loaded: false,
       list: []
@@ -28,7 +28,7 @@ class Section extends React.Component {
   }
   componentDidMount() {
     const { id } = this.props.match.params;
-    analyticsAPI.getSection(id).then(object => {
+    analyticsAPI.getDoc(id).then(object => {
       console.log(object);
       if (object.success) {
         this.setState({
@@ -37,11 +37,11 @@ class Section extends React.Component {
         });
       }
     });
-    duplicateAPI.list(id).then(object => {
+    docAPI.getSection(id).then(object => {
       if (object.success) {
         this.setState({
           loaded: true,
-          dataList: object.data
+          list: object.data.sections
         });
       }
     });
@@ -56,6 +56,20 @@ class Section extends React.Component {
       })
       .reduce((prev, curr) => [prev, ", ", curr]);
   }
+  stateColor(value) {
+    switch (value) {
+      case 6:
+        return "#f45";
+      case 2:
+        return "#353f8c";
+      case 3:
+        return "#353f8c";
+      case 4:
+        return "#c4d435";
+      default:
+        return "#31a83d";
+    }
+  }
   render() {
     const columns = [
       {
@@ -68,60 +82,58 @@ class Section extends React.Component {
         }
       },
       {
-        Header: "Mục",
-        accessor: "section",
-        style: { "font-weight": "700" },
-        Cell: props => (
-          <a
-            className="name"
-            href={"/dashboard/sections/detail/" + props.original.section_id}
-          >
-            <span>
-              {props.original.section_name != null
-                ? props.original.section_name
-                : ""}
-            </span>
-          </a>
-        )
-      },
-      {
-        Header: "Chương",
-        accessor: "chapter",
+        Header: "Tên mục",
+        accessor: "name",
+        minWidth: 175,
         Cell: props => (
           <Link
-            className="name"
-            to={"/dashboard/chapters/detail/" + props.original.chapter_id}
+            to={"/dashboard/sections/detail/" + props.original.id}
+            className="number"
           >
-            <span className="number">{props.original.chapter_name}</span>
+            {props.original.name}
           </Link>
         )
       },
       {
-        Header: "Quyển",
-        accessor: "volume",
+        Header: "Người duyệt",
+        accessor: "reviewer",
         Cell: props => (
-          <Link
-            className="name"
-            to={"/dashboard/volumes/detail/" + props.original.volume_id}
-          >
-            <span className="number">
-              {props.original.volume_name && props.original.volume_name}
-            </span>
+          <Link to={"/dashboard/user/" + props.value.id} className="number">
+            {props.value.name}
           </Link>
         )
       },
       {
-        Header: "Tập",
-        accessor: "book",
+        Header: "Người soạn",
+        accessor: "users",
+        Cell: props => this.userrender(props.value)
+      },
+      {
+        Header: "Số tư liệu sử dụng",
+        accessor: "document_count",
+        Cell: props => <span className="number">{props.value}</span>
+      },
+      {
+        Header: "Trạng thái",
+        accessor: "state",
         Cell: props => (
-          <Link
-            className="name"
-            to={"/dashboard/books/detail/" + props.original.book_id}
+          <span
+            style={{
+              color: this.stateColor(props.value.id)
+            }}
           >
-            <span className="number">
-              {props.original.book_name && props.original.book_name}
-            </span>
-          </Link>
+            {props.value.name}
+          </span>
+        )
+      },
+      {
+        Header: "Cập nhật",
+        width: 100,
+        accessor: "updated_at",
+        Cell: props => (
+          <span className="number">
+            {moment(props.value).format("h:mm:ss DD/MM/YYYY")}
+          </span>
         )
       }
     ];
@@ -131,7 +143,7 @@ class Section extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
-              Mục: {this.state.data.section && this.state.data.section.name}
+              Tư liệu: {this.state.data && this.state.data.name}
             </span>
             <span className="qc-header-tool">
               <button>
@@ -176,24 +188,37 @@ class Section extends React.Component {
           </div>
           {this.state.loaded ? (
             <div className="qc-content">
-              <div className="qc-section-title">Giới thiệu</div>
+              <div className="qc-section-title">Nội dung</div>
               <p
                 dangerouslySetInnerHTML={
-                  this.state.data.section && {
-                    __html: this.state.data.section.description
+                  this.state.data && {
+                    __html: this.state.data.content
                   }
                 }
               ></p>
               <hr />
+              <div className="qc-section-title">Đường dẫn tư liệu</div>
+              <p>
+                <a href={this.state.data.url} target="_blank">
+                  {this.state.data.url}
+                </a>
+              </p>
+              <hr />
+
+              <div className="qc-section-title">Người cung cấp</div>
+              <p>
+                {this.state.data.user ? (
+                  <Link to={"/dashboard/user/" + this.state.data.user.id}>
+                    {this.state.data.user.name}
+                  </Link>
+                ) : null}
+              </p>
+              <hr />
               <div className="qc-section-title">Người duyệt</div>
               <p>
-                {this.state.data.section.reviewer ? (
-                  <Link
-                    to={
-                      "/dashboard/user/" + this.state.data.section.reviewer.id
-                    }
-                  >
-                    {this.state.data.section.reviewer.name}
+                {this.state.data.approver ? (
+                  <Link to={"/dashboard/user/" + this.state.data.approver.id}>
+                    {this.state.data.approver.name}
                   </Link>
                 ) : null}
               </p>
@@ -204,14 +229,23 @@ class Section extends React.Component {
         </div>
         <div className="qc-content qc-card">
           <div className="qc-card-header">
-            <span className="qc-header-title">Danh sách mục trùng lặp</span>
+            <span className="qc-header-title">Danh sách mục sử dụng tư liệu</span>
           </div>
 
           <ReactTable
             PaginationComponent={Pagination}
             defaultPageSize={10}
             minRows={1}
-            data={this.state.dataList}
+            data={
+              this.state.list &&
+              this.state.list.filter(object =>
+                object.name
+                  ? object.name
+                      .toUpperCase()
+                      .indexOf(this.state.filter.toUpperCase()) != -1
+                  : true
+              )
+            }
             columns={columns}
           />
         </div>
@@ -219,4 +253,4 @@ class Section extends React.Component {
     );
   }
 }
-export default Section;
+export default Doc;

@@ -45,6 +45,7 @@ import SectionDuplicate from "./sections/SectionDuplicate";
 import EditChapter from "./chapters/EditChapter";
 import Section from "./sections/Section";
 import EditSection from "./sections/EditSection";
+import Doc from "./documentations/Doc";
 
 class DashBoard extends React.Component {
   constructor(props) {
@@ -345,13 +346,29 @@ class DashBoard extends React.Component {
           <Breadcrumb
             data={[
               {
-                path: "",
+                path: "/dashboard/documentations/",
                 name: "Quản lý tư liệu"
               }
             ]}
           />
         ),
         main: Docs
+      },
+      ,
+      {
+        path: "/dashboard/documentations/detail/:id",
+        exact: true,
+        sidebar: () => (
+          <Breadcrumb
+            data={[
+              {
+                path: "/dashboard/documentations/",
+                name: "Quản lý tư liệu"
+              }
+            ]}
+          />
+        ),
+        main: Doc
       },
       {
         path: "/dashboard/documentations/new",
@@ -462,7 +479,7 @@ class DashBoard extends React.Component {
                 </DropdownToggle>
                 <DropdownMenu>
                   <ul className="qc-dropdown-ul">
-                    <Link to="/dashboard/user/1">
+                    <Link to={"/dashboard/user/" + localStorage.id}>
                       <li>Tài khoản</li>
                     </Link>
                     <li onClick={this.signout}>Đăng xuất</li>

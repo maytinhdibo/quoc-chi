@@ -39,19 +39,11 @@ module.exports = function(sequelize, Sequelize) {
     approverId: {
       type: Sequelize.BIGINT,
       allowNull: true,
-      references: {
-        model: "users",
-        key: "id"
-      },
       field: "approver_id"
     },
     userId: {
       type: Sequelize.BIGINT,
       allowNull: true,
-      references: {
-        model: "users",
-        key: "id"
-      },
       field: "user_id"
     },
     docStateId: {

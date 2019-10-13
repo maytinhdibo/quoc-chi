@@ -23,13 +23,14 @@ class Login extends React.Component {
         const { email, password } = this.state
         userAPI.login({ email, password }).then(object => {
             if (object.success) {
+                console.log(object);
                 localStorage.token = object.data.token;
                 localStorage.name = object.data.name;
+                localStorage.id = object.data.id;
                 auth.login();
-                this.setState({ redirectToReferrer: true })
+                this.setState({ redirectToReferrer: true });
             } else {
-                console.log(object);
-                throw new Error('Tên đăng nhập hoặc mật khẩu sai');
+                throw new Error(object.reason);
             }
         }).catch(e => {
             alertText(e.message);

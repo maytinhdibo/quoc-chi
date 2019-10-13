@@ -2,3 +2,4 @@ node_modules/
 .DS_Store
 backend/config/config.json
 webapp/src/config/app.config.js
+webapp/build/

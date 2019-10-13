@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const db = require('./models/index');
 const cors = require("cors");
+const path = require("path")
 
 //Router
 const apiRouter = require('./services/router.js');
@@ -16,16 +17,25 @@ app.use(bodyParser.json());
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(cors());
+// app.use(cors());
 
 app.use('/api', apiRouter);
 
 
 // add a basic route
 // start the app
-app.get('/', function (req, res) {
-  res.json({ message: 'Express is up!' });
-});
+// app.get('/', function (req, res) {
+//   res.json({ message: 'Express is up!' });
+// });
+
+// serve static files from the `public` folder
+// app.use(express.static(__dirname + '/public'));
+
+
+app.use('/', express.static(path.join(__dirname + '/../webapp/build')));
+
+
+console.log("Hihi",path.join(__dirname, '/../webapp/build'));
 
 // const models=require("./models");
 

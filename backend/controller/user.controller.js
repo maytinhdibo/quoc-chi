@@ -21,7 +21,8 @@ const login = async (req, res) => {
                     id: user.id
                 });
                 let name = user.name;
-                return res.json(response.success({ token, name }));
+                let id = user.id;
+                return res.json(response.success({ id, token, name }));
             } else {
                 throw new Error("Mật khẩu không chính xác!");
             }

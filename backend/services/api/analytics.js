@@ -12,5 +12,7 @@ router.get("/chapters", auth.verifyAccessToken, controller.getChapters);
 router.get("/chapter", auth.verifyAccessToken, controller.getChapter);
 router.get("/sections", auth.verifyAccessToken, controller.getSections);
 router.get("/section", auth.verifyAccessToken, controller.getSection);
+router.get("/docs", auth.verifyAccessToken, controller.getDocs);
+router.get("/doc", auth.verifyAccessToken, controller.getDoc);
 
 module.exports = router;

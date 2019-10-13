@@ -74,7 +74,8 @@ const listDuplicate = async (req, res) => {
       ` +
         `WHERE s.name=(SELECT name FROM sections WHERE id = ` +
         id +
-        ` LIMIT 1)`,
+        ` LIMIT 1) AND s.id <> ` +
+        id,
       {
         type: db.sequelize.QueryTypes.SELECT
       }

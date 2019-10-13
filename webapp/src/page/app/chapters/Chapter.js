@@ -78,7 +78,7 @@ class Chapter extends React.Component {
         }
       },
       {
-        Header: "Tên chương",
+        Header: "Tên mục",
         accessor: "name",
         minWidth: 175,
         Cell: props => (

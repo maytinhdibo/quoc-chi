@@ -306,6 +306,112 @@ const getSection = async (req, res) => {
   }
 };
 
+const getDocs = async (req, res) => {
+  try {
+    var documentations = await db.sequelize.query(
+      `
+      SELECT d.id as doc_id, d.name as doc_name, d.updated_at as updated_at,
+      d.doc_state_id as state_id, ds.name as state_name,
+      u.id as user_id, u.name as user_name,
+      a.id as approver_id, a.name as approver_name,
+      T1.count as total_section
+      FROM documentations d
+      LEFT JOIN users u ON u.id=d.user_id
+      LEFT JOIN users a ON a.id=d.approver_id
+      LEFT JOIN doc_states ds ON d.doc_state_id = ds.id
+      LEFT JOIN (
+        SELECT count(*) as count, documentation_id as id
+        FROM sections_docs_logs
+        GROUP BY documentation_id) T1 
+      ON T1.id=d.id
+   `,
+      {
+        type: db.sequelize.QueryTypes.SELECT
+      }
+    );
+    documentations = documentations.map(object => {
+      return {
+        id: object.doc_id,
+        name: object.doc_name,
+        user: {
+          id: object.user_id,
+          name: object.user_name
+        },
+        approver: {
+          id: object.approver_id,
+          name: object.approver_name
+        },
+        state: {
+          id: object.state_id,
+          name: object.state_name
+        },
+        total_section: object.total_section,
+        updated_at: object.updated_at
+      };
+    });
+    res.json(response.success({ documentations }));
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+};
+
+const getDoc = async (req, res) => {
+  try {
+    const { id } = req.query;
+    var documentation = await db.sequelize.query(
+      `
+      SELECT d.id as doc_id, d.name as doc_name, d.updated_at as updated_at,
+      d.content as content, d.url as url,
+      d.doc_state_id as state_id, ds.name as state_name,
+      u.id as user_id, u.name as user_name,
+      a.id as approver_id, a.name as approver_name,
+      T1.count as total_section
+      FROM documentations d
+      LEFT JOIN users u ON u.id=d.user_id
+      LEFT JOIN users a ON a.id=d.approver_id
+      LEFT JOIN doc_states ds ON d.doc_state_id = ds.id
+      LEFT JOIN (
+        SELECT count(*) as count, documentation_id as id
+        FROM sections_docs_logs
+        GROUP BY documentation_id) T1 
+      ON T1.id=d.id
+      WHERE d.id=` +
+        id +
+        ` LIMIT 1`,
+      {
+        type: db.sequelize.QueryTypes.SELECT
+      }
+    );
+    if (documentation.length == 0) {
+      throw new Error("Không tìm thấy tư liệu");
+    }
+    let object = documentation[0];
+    documentation = {
+      id: object.doc_id,
+      name: object.doc_name,
+      content: object.content,
+      url: object.url,
+      user: {
+        id: object.user_id,
+        name: object.user_name
+      },
+      approver: {
+        id: object.approver_id,
+        name: object.approver_name
+      },
+      state: {
+        id: object.state_id,
+        name: object.state_name
+      },
+      total_section: object.total_section,
+      updated_at: object.updated_at
+    };
+    res.json(response.success(documentation));
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+};
+
 module.exports = {
   getBooks,
   getBook,
@@ -314,5 +420,7 @@ module.exports = {
   getChapters,
   getChapter,
   getSections,
-  getSection
+  getSection,
+  getDocs,
+  getDoc
 };

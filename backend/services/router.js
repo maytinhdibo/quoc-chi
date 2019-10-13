@@ -9,6 +9,7 @@ const bookRouter = require("./api/book");
 const volumeRouter = require("./api/volume");
 const chapterRouter = require("./api/chapter");
 const sectionRouter = require("./api/section");
+const docRouter = require("./api/documentation");
 const checkDuplicate = require("./api/checkduplicate");
 
 router.use("/", userRouter);
@@ -19,6 +20,7 @@ router.use("/book", bookRouter);
 router.use("/volume", volumeRouter);
 router.use("/chapter", chapterRouter);
 router.use("/section", sectionRouter);
+router.use("/doc", docRouter);
 router.use("/duplicate", checkDuplicate);
 
 
