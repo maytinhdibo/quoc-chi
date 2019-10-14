@@ -141,7 +141,7 @@ class EditSection extends React.Component {
         this.setState({
           name,
           description,
-          content
+          content: content ? content : ""
         });
       } else {
         alertText(object.reason);

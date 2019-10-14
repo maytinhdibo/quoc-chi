@@ -19,6 +19,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
+app.use(express.static(path.join(__dirname, '/../webapp/build/')));
+
 app.use('/api', apiRouter);
 
 
@@ -32,8 +34,11 @@ app.use('/api', apiRouter);
 // app.use(express.static(__dirname + '/public'));
 
 
-app.use('/', express.static(path.join(__dirname + '/../webapp/build')));
+// app.use('*', express.static(path.join(__dirname + '/../webapp/build')));
 
+app.get('*', (req,res) =>{
+  res.sendFile(path.join(__dirname + '/../webapp/build/index.html'));
+});
 
 console.log("Hihi",path.join(__dirname, '/../webapp/build'));
 
