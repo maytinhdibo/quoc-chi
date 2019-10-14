@@ -145,7 +145,7 @@ class SectionDuplicate extends React.Component {
               <hr />
               <div className="qc-section-title">Người duyệt</div>
               <p>
-                {this.state.data.section.reviewer ? (
+                {this.state.data.section && this.state.data.section.reviewer ? (
                   <Link
                     to={
                       "/dashboard/user/" + this.state.data.section.reviewer.id
