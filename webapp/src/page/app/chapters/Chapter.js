@@ -151,7 +151,7 @@ class Chapter extends React.Component {
               <div className="tool-dropdown">
                 <div className="content">
                   <ul class="qc-dropdown-ul">
-                    <Link to={`/dashboard/chapter/${this.props.match.params.id}/newsection`}>
+                    <Link to={`/dashboard/chapters/${this.props.match.params.id}/newsection`}>
                       <li>
                         <span className="icon">
                           <FontAwesomeIcon icon={faPlus} />

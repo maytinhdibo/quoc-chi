@@ -341,7 +341,7 @@ class DashBoard extends React.Component {
         main: NewSection
       },
       {
-        path: "/dashboard/chapter/:id/newsection",
+        path: "/dashboard/chapters/:id/newsection",
         sidebar: () => (
           <Breadcrumb
             data={[
