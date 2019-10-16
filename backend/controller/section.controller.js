@@ -1,21 +1,19 @@
 const db = require("../models");
 const response = require("../utils/response");
 
-const newBook = async (req, res) => {
+const newSection = async (req, res) => {
   try {
-    let { name, adminValue, description } = req.body;
-    let newbook = await db.book.create({
-      name: name,
-      description
+    console.log(4543);
+
+    let chapterId = req.query.id;
+    let { name, description } = req.body;
+    let newsection = await db.section.create({
+      name,
+      description,
+      chapterId
     });
-    adminValue.forEach(async element => {
-      await db.books_user.create({
-        bookId: newbook.id,
-        userId: element,
-        bookRoleId: 1
-      });
-    });
-    res.json(response.success());
+   
+    res.json(response.success(newsection));
   } catch (e) {
     res.json(response.fail(e.message));
   }
@@ -49,6 +47,6 @@ const editSection = async (req, res) => {
 };
 
 module.exports = {
-  newBook,
+  newSection,
   editSection
 };

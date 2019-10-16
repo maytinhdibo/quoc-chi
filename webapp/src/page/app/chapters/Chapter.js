@@ -151,12 +151,12 @@ class Chapter extends React.Component {
               <div className="tool-dropdown">
                 <div className="content">
                   <ul class="qc-dropdown-ul">
-                    <Link to="new">
+                    <Link to={`/dashboard/chapter/${this.props.match.params.id}/newsection`}>
                       <li>
                         <span className="icon">
                           <FontAwesomeIcon icon={faPlus} />
                         </span>
-                        Thêm chương mới
+                        Thêm mục mới
                       </li>
                     </Link>
                     <Link

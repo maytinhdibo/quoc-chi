@@ -46,6 +46,7 @@ import EditChapter from "./chapters/EditChapter";
 import Section from "./sections/Section";
 import EditSection from "./sections/EditSection";
 import Doc from "./documentations/Doc";
+import NewSection from "./sections/NewSection";
 
 class DashBoard extends React.Component {
   constructor(props) {
@@ -337,7 +338,21 @@ class DashBoard extends React.Component {
             ]}
           />
         ),
-        main: EditSection
+        main: NewSection
+      },
+      {
+        path: "/dashboard/chapter/:id/newsection",
+        sidebar: () => (
+          <Breadcrumb
+            data={[
+              {
+                path: "/dashboard/books",
+                name: "Quản lý tập"
+              }
+            ]}
+          />
+        ),
+        main: NewSection
       },
       {
         path: "/dashboard/documentations",
