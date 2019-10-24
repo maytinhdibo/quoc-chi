@@ -10,7 +10,11 @@ const language = {
   filter: "Bộ lọc",
   checkduplicate: "Kiểm tra trùng lặp",
   list: "Danh sách",
-  edit: "Chỉnh sửa"
+  edit: "Chỉnh sửa",
+  table:{
+    loadingText: 'Đang tải...', 
+    noDataText: 'Không có kết quả phù hợp'
+  }
 };
 
 export default language;

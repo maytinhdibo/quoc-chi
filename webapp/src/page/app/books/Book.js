@@ -5,6 +5,7 @@ import { Col, Row } from "reactstrap";
 import Pagination from "../../../components/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactLoading from "react-loading";
+import language from "../../../config/language";
 import {
   faPlus,
   faFilePdf,
@@ -207,6 +208,7 @@ class Book extends React.Component {
           </div>
 
           <ReactTable
+            {...language.table}
             PaginationComponent={Pagination}
             defaultPageSize={10}
             minRows={1}

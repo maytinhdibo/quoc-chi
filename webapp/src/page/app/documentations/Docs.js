@@ -11,6 +11,7 @@ import {
 import analyticsAPI from "../../../services/analytics.services";
 import { alertText } from "../../../components/Alert";
 import moment from "moment";
+import language from "../../../config/language";
 
 class Docs extends React.Component {
   state = {
@@ -56,12 +57,18 @@ class Docs extends React.Component {
       {
         Header: "Tên tư liệu",
         accessor: "name",
-        Cell: props => <Link to={"detail/" + props.original.id}>{props.value}</Link>
+        Cell: props => (
+          <Link to={"detail/" + props.original.id}>{props.value}</Link>
+        )
       },
       {
         Header: "Cập nhật",
         accessor: "updated_at",
-        Cell: props => <span className="number">{moment(props.value).format("h:mm:ss DD/MM/YYYY")}</span>
+        Cell: props => (
+          <span className="number">
+            {moment(props.value).format("h:mm:ss DD/MM/YYYY")}
+          </span>
+        )
       },
       {
         Header: "Người cung cấp",
@@ -130,6 +137,7 @@ class Docs extends React.Component {
         </div>
         <div className="qc-content">
           <ReactTable
+            {...language.table}
             PaginationComponent={Pagination}
             defaultPageSize={10}
             minRows={0}

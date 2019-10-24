@@ -8,6 +8,7 @@ import ReactLoading from "react-loading";
 import { faPlus, faFilePdf, faChartBar, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import analyticsAPI from '../../../services/analytics.services';
 import { ProgressBar } from '../../../components/ProgressBar';
+import language from "../../../config/language";
 
 class Books extends React.Component {
     constructor(props) {
@@ -112,6 +113,7 @@ class Books extends React.Component {
                         minRows={1}
                         data={this.state.data && this.state.data.filter(object => (object.name ? (object.name.toUpperCase().indexOf(this.state.filter.toUpperCase()) != -1) : true))}
                         columns={columns}
+                        {...language.table}
                     />
                 </div> : <ReactLoading className="qc-loading" type="spin" color="#888" />}
             </div>

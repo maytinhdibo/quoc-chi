@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import duplicateAPI from "../../../services/duplicate.services";
+import language from "../../../config/language";
 
 class Section extends React.Component {
   constructor(props) {
@@ -208,6 +209,7 @@ class Section extends React.Component {
           </div>
 
           <ReactTable
+            {...language.table}
             PaginationComponent={Pagination}
             defaultPageSize={10}
             minRows={1}
