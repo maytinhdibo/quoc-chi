@@ -26,22 +26,28 @@ class Search extends React.Component {
   search = () => {
     const { type, query, location } = this.state;
     this.setState({ isLoading: 1 });
-    searchAPI
-      .search(type, query, location)
-      .then(res => {
-        if (res.success) {
-          this.setState({
-            isLoading: 2,
-            data: res.data.data,
-            locationRes: res.data.location
-          });
-        } else {
-          throw new Error(res.reason);
-        }
-      })
-      .catch(e => {
-        alertText(e.message);
-      });
+    try {
+      if(query.length<2) throw new Error("Vui lòng đưa ra từ khóa đầy đủ hơn"); 
+      searchAPI
+        .search(type, query, location)
+        .then(res => {
+          if (res.success) {
+            this.setState({
+              isLoading: 2,
+              data: res.data.data,
+              locationRes: res.data.location
+            });
+          } else {
+            throw new Error(res.reason);
+          }
+        })
+        .catch(e => {
+          throw new Error(e.message);
+        });
+    } catch (e) {
+      alertText(e.message);
+      this.setState({ isLoading: 0 });
+    }
   };
 
   checkVisible = location => {
@@ -79,35 +85,55 @@ class Search extends React.Component {
         Header: "Mục",
         show: this.checkVisible("section"),
         Cell: props => (
-          <Link className="name" to={"/dashboard/sections/detail/"+props.original.section_id}>{props.original.section_name}</Link>
+          <Link
+            className="name"
+            to={"/dashboard/sections/detail/" + props.original.section_id}
+          >
+            {props.original.section_name}
+          </Link>
         )
       },
       {
         Header: "Chương",
         show: this.checkVisible("chapter"),
         Cell: props => (
-          <Link className="name" to={"/dashboard/chapters/detail/"+props.original.chapter_id}>{props.original.chapter_name}</Link>
+          <Link
+            className="name"
+            to={"/dashboard/chapters/detail/" + props.original.chapter_id}
+          >
+            {props.original.chapter_name}
+          </Link>
         )
       },
       {
         Header: "Tập",
         show: this.checkVisible("volume"),
         Cell: props => (
-          <Link className="name" to={"/dashboard/volumes/detail/"+props.original.volume_id}>{props.original.volume_name}</Link>
+          <Link
+            className="name"
+            to={"/dashboard/volumes/detail/" + props.original.volume_id}
+          >
+            {props.original.volume_name}
+          </Link>
         )
       },
       {
         Header: "Quyển",
         show: this.checkVisible("book"),
         Cell: props => (
-          <Link className="name" to={"/dashboard/books/detail/"+props.original.book_id}>{props.original.book_name}</Link>
+          <Link
+            className="name"
+            to={"/dashboard/books/detail/" + props.original.book_id}
+          >
+            {props.original.book_name}
+          </Link>
         )
       }
     ];
     return (
       <div>
         <div className="qc-content qc-card">
-          <div className="qc-card-header">Tìm kiếm</div>
+          <div className="qc-card-header">Bộ lọc</div>
           <div className="qc-content">
             <FormGroup>
               <Label for="exampleEmail">Nội dung tìm kiếm</Label>
@@ -162,9 +188,9 @@ class Search extends React.Component {
               <input id="tuongdoi" type="checkbox" />
               Tìm kiếm tương đối
             </label>
-            <div className="qc-align-right">
+            <div className="qc-align-center">
               <button onClick={this.search} className="qc-btn">
-                <FontAwesomeIcon icon={faSearch} /> {language.search}
+                {language.search}
               </button>
             </div>
           </div>

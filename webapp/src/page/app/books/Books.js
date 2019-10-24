@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactLoading from "react-loading";
 import { faPlus, faFilePdf, faChartBar, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import analyticsAPI from '../../../services/analytics.services';
+import { ProgressBar } from '../../../components/ProgressBar';
 
 class Books extends React.Component {
     constructor(props) {
@@ -73,11 +74,16 @@ class Books extends React.Component {
                 accessor: 'user',
                 Cell: props => <span className='number'>{props.value}</span>
 
+            }, {
+                Header: 'Hoàn thành',
+                accessor: 'user',
+                Cell: props => <ProgressBar value={Math.random()} />
             }]
+
         return (
             <div className="qc-content qc-card">
                 <div className="qc-card-header">
-                    <span className="qc-header-title">Quản lý tập</span>
+                    <span className="qc-header-title">Danh sách tập</span>
                     <span className="qc-header-tool">
                         <button>Hành động <span className="icon"><FontAwesomeIcon icon={faChevronDown} /></span></button>
                         <div className="tool-dropdown">

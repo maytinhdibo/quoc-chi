@@ -73,6 +73,7 @@
     "react": "^16.10.2",
     "react-app-polyfill": "^1.0.4",
     "react-chartjs-2": "^2.8.0",
+    "react-countup": "^4.2.2",
     "react-dev-utils": "^9.1.0",
     "react-dom": "^16.10.2",
     "react-loading": "^2.0.3",

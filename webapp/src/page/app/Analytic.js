@@ -1,7 +1,33 @@
 import React from "react";
 import { Row, Col, Container } from "reactstrap";
-import { Bubble } from "react-chartjs-2";
+import { Bubble, Bar } from "react-chartjs-2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CountUp from "react-countup";
+
+import {
+  faUser,
+  faClipboardList,
+  faFolder,
+  faBookReader
+} from "@fortawesome/free-solid-svg-icons";
+import analyticsAPI from "../../services/analytics.services";
+
 class Analytic extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      overview: null
+    };
+  }
+  componentDidMount() {
+    analyticsAPI.overview().then(object => {
+      if (object.success) {
+        this.setState({
+          overview: object.data
+        });
+      }
+    });
+  }
   convertData(data) {
     return {
       datasets: data.datasets.map(object => {
@@ -170,6 +196,55 @@ class Analytic extends React.Component {
       <div>
         <div className="qc-content qc-analytic-acc">
           <Row>
+            <Col xs={0} md={2}></Col>
+            <Col className="qc-analytic-number" xs={6} md={2}>
+              <span className="title">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faUser} />
+                </span>
+                Nhà khoa học
+              </span>
+              <h3>
+                <CountUp end={this.state.overview && this.state.overview.users} />
+              </h3>
+            </Col>
+            <Col className="qc-analytic-number" xs={6} md={2}>
+              <span className="title">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faBookReader} />
+                </span>
+                Số lượng mục
+              </span>
+              <h3>
+                <CountUp end={this.state.overview && this.state.overview.sections} />
+              </h3>
+            </Col>
+            <Col className="qc-analytic-number" xs={6} md={2}>
+              <span className="title">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faClipboardList} />
+                </span>
+                Hoàn thành
+              </span>
+              <h3>
+                <CountUp end={this.state.overview && this.state.overview.sections_done} />
+              </h3>
+            </Col>
+            <Col className="qc-analytic-number" xs={6} md={2}>
+              <span className="title">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faFolder} />
+                </span>
+                Tư liệu
+              </span>
+              <h3>
+                <CountUp end={this.state.overview && this.state.overview.docs} />
+              </h3>
+            </Col>
+
+            <Col xs={0} md={2}></Col>
+          </Row>
+          {/* <Row>
             <Col md={4}>
               <Container fluid className="qc-card qc-welcome">
                 <h2>Chào mừng</h2>
@@ -207,7 +282,7 @@ class Analytic extends React.Component {
                 </ul>
               </Container>
             </Col>
-          </Row>
+          </Row> */}
         </div>
 
         <div className="qc-content">
@@ -218,6 +293,9 @@ class Analytic extends React.Component {
             <div className="card-body">
               <Bubble
                 options={{
+                  legend: {
+                    position: "bottom"
+                  },
                   scales: {
                     xAxes: [
                       {
@@ -237,23 +315,116 @@ class Analytic extends React.Component {
                     ]
                   },
                   tooltips: {
-                      callbacks: {
-                          label: function (tooltipItem, data) {
-                              var dataset = data.datasets[tooltipItem.datasetIndex];
+                    callbacks: {
+                      label: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        return (
+                          dataset.label +
+                          ": (Tư liệu: " +
+                          tooltipItem.xLabel +
+                          ", Mục: " +
+                          tooltipItem.yLabel +
+                          ")"
+                        );
+                      },
+                      afterLabel: function(tooltipItem, data) {
+                        var dataset = data.datasets[tooltipItem.datasetIndex];
+                        var r = dataset.data[0].r;
 
-                              return dataset.label + ': (Tư liệu: ' + tooltipItem.xLabel + ', Mục: ' + tooltipItem.yLabel + ')'
-                          },
-                          afterLabel: function (tooltipItem, data) {
-                              var dataset = data.datasets[tooltipItem.datasetIndex];
-                              var r = dataset.data[0].r;
-
-                              return 'Số biên tập viên: ' + r*3;
-                          }
-                        }}
+                        return "Số biên tập viên: " + r * 3;
+                      }
+                    }
+                  }
                 }}
                 data={this.convertData(chartData)}
               />
             </div>
+          </div>
+        </div>
+        <br />
+        <div className="qc-card">
+          <div className="qc-card-header">Thống kê biên tập viên</div>
+          <div className="card-body">
+            <Bar
+              height={400}
+              // data={this.convertData(chartData)}
+              data={{
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                datasets: [
+                  {
+                    label: "# of Votes 1",
+                    data: [10, 19, 3, 5, 2, 3, 9],
+                    backgroundColor: [
+                      "rgba(255, 99, 132, 0.6)",
+                      "rgba(255, 99, 132, 0.6)",
+                      "rgba(255, 99, 132, 0.6)",
+                      "rgba(255, 99, 132, 0.6)",
+                      "rgba(255, 99, 132, 0.6)",
+                      "rgba(255, 99, 132, 0.6)",
+                      "rgba(255, 99, 132, 0.6)"
+                    ],
+                    borderColor: [
+                      "rgba(255,99,132,1)",
+                      "rgba(255,99,132,1)",
+                      "rgba(255,99,132,1)",
+                      "rgba(255,99,132,1)",
+                      "rgba(255,99,132,1)",
+                      "rgba(255,99,132,1)",
+                      "rgba(255,99,132,1)"
+                    ],
+                    borderWidth: 2
+                  },
+                  {
+                    label: "# of Votes 2",
+                    data: [15, 19, 3, 5, 2, 3, 4],
+                    backgroundColor: [
+                      "rgba(255, 159, 64, 0.6)",
+                      "rgba(255, 159, 64, 0.6)",
+                      "rgba(255, 159, 64, 0.6)",
+                      "rgba(255, 159, 64, 0.6)",
+                      "rgba(255, 159, 64, 0.6)",
+                      "rgba(255, 159, 64, 0.6)",
+                      "rgba(255, 159, 64, 0.6)"
+                    ],
+                    borderColor: [
+                      "rgba(255, 159, 64, 1)",
+                      "rgba(255, 159, 64, 1)",
+                      "rgba(255, 159, 64, 1)",
+                      "rgba(255, 159, 64, 1)",
+                      "rgba(255, 159, 64, 1)",
+                      "rgba(255, 159, 64, 1)",
+                      "rgba(255, 159, 64, 1)"
+                    ],
+                    borderWidth: 2
+                  }
+                ]
+              }}
+              options={{
+                maintainAspectRatio: false,
+                scales: {
+                  yAxes: [
+                    {
+                      stacked: true,
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }
+                  ],
+                  xAxes: [
+                    {
+                      stacked: true,
+                      scaleLabel: {
+                        display: true,
+                        labelString: "Thống kê biên tập viên"
+                      },
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }
+                  ]
+                }
+              }}
+            />
           </div>
         </div>
       </div>

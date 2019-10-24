@@ -143,7 +143,7 @@ class Doc extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
-              Tư liệu: {this.state.data && this.state.data.name}
+              {this.state.data && this.state.data.name}
             </span>
             <span className="qc-header-tool">
               <button>

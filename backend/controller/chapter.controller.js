@@ -1,13 +1,11 @@
 const db = require('../models');
 const response = require('../utils/response');
 
-
-//need edit
 const newChapter = async (req, res) => {
     try {
         let volumeid = req.query.id;
         let { name, description } = req.body;
-        let newvolume = await db.chapter.create({
+        await db.chapter.create({
             name:name,
             description:description,
             volumeId: volumeid
@@ -19,7 +17,6 @@ const newChapter = async (req, res) => {
     }
 }
 
-//need edit
 const editChapter = async (req, res) => {
     try {
         let chapterId = req.query.id;

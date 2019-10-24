@@ -115,6 +115,7 @@ class Users extends React.Component {
                 });
                 console.log(object);
             } else {
+                this.setState({ loading: 0 });
                 alertText(object.reason);
             }
         })
@@ -313,7 +314,7 @@ class Users extends React.Component {
                             />
                         </FormGroup>
 
-                        <div className="qc-align-right">
+                        <div className="qc-align-center">
                             <button onClick={this.filter} className="qc-btn"><FontAwesomeIcon icon={faSearch} /> {language.search}</button>
                         </div>
                     </div>

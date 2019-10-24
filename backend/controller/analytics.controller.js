@@ -3,6 +3,33 @@ const response = require("../utils/response");
 var _ = require("lodash");
 var stringify = require("json-stringify-safe");
 
+const overview = async (req, res) => {
+  try {
+    const list = await db.sequelize.query(
+      `SELECT 'users' as name, count(*) as total FROM users
+    UNION
+    SELECT 'docs' as name, count(*) as total FROM documentations
+    UNION
+    SELECT 'sections' as name, count(*) as total FROM sections
+    UNION
+    SELECT 'sections_done' as name, count(*) as total FROM sections WHERE section_state_id = 1`,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    const convertList = _.reduce(
+      list,
+      function(hash, value) {
+        var key = value["name"];
+        hash[key] = value["total"];
+        return hash;
+      },
+      {}
+    );
+    res.json(response.success(convertList));
+  } catch (err) {
+    res.json(response.fail(err.message));
+  }
+};
+
 const getBooks = async (req, res) => {
   try {
     list = await db.sequelize.query(
@@ -409,6 +436,7 @@ const getDoc = async (req, res) => {
 };
 
 module.exports = {
+  overview,
   getBooks,
   getBook,
   getVolumes,

@@ -96,7 +96,7 @@ class Docs extends React.Component {
     return (
       <div className="qc-content qc-card">
         <div className="qc-card-header">
-          <span className="qc-header-title">Quản lý tư liệu</span>
+          <span className="qc-header-title">Danh sách tư liệu</span>
           <span className="qc-header-tool">
             <button>
               Hành động{" "}

@@ -2,9 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Route, Switch } from "react-router-dom";
 import {
-  Container,
-  NavLink,
-  Collapse,
   NavItem,
   UncontrolledDropdown,
   DropdownToggle,
@@ -16,7 +13,7 @@ import {
 } from "reactstrap";
 import language from "../../config/language";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faBars, faSearch, faUserCircle, faUser } from "@fortawesome/free-solid-svg-icons";
 import NavGroup from "../../components/NavGroup";
 import Analytic from "./Analytic";
 import About from "./../docs/About";
@@ -99,7 +96,20 @@ class DashBoard extends React.Component {
       {
         path: "/dashboard",
         exact: true,
-        sidebar: () => <span></span>,
+        sidebar: () => (
+          <Breadcrumb
+            data={[
+              {
+                path: "/dashboard",
+                name: null
+              },
+              {
+                path: "/",
+                name: "Thống kê tổng quan"
+              }
+            ]}
+            title={<span>Thống kê tổng quan</span>}
+          />),
         main: Analytic
       },
       {
@@ -116,6 +126,7 @@ class DashBoard extends React.Component {
                 name: "Giới thiệu"
               }
             ]}
+            title={<span>Giới thiệu</span>}
           />
         ),
         main: About
@@ -130,6 +141,7 @@ class DashBoard extends React.Component {
                 name: "Tài khoản"
               }
             ]}
+            title={<span>Tài khoản</span>}
           />
         ),
         main: User
@@ -144,6 +156,7 @@ class DashBoard extends React.Component {
                 name: "Tìm Kiếm"
               }
             ]}
+            title={<span>Tìm kiếm</span>}
           />
         ),
         main: Search
@@ -158,6 +171,7 @@ class DashBoard extends React.Component {
                 name: "Rà soát trùng lặp"
               }
             ]}
+            title={<span>Rà soát trùng lặp</span>}
           />
         ),
         main: CheckDuplicate
@@ -173,6 +187,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Quản lý tập</span>}
           />
         ),
         main: Books
@@ -192,6 +207,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Thông tin tập</span>}
           />
         ),
         main: Book
@@ -206,6 +222,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Sửa tập</span>}
           />
         ),
         main: EditBook
@@ -220,6 +237,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Thông tin quyển</span>}
           />
         ),
         main: Volume
@@ -248,6 +266,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Thêm chương mới</span>}
           />
         ),
         main: NewVolume
@@ -262,6 +281,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Thông tin chương</span>}
           />
         ),
         main: Chapter
@@ -276,6 +296,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Thêm chương mới</span>}
           />
         ),
         main: NewChapter
@@ -290,6 +311,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Chỉnh sửa chương</span>}
           />
         ),
         main: EditChapter
@@ -308,6 +330,7 @@ class DashBoard extends React.Component {
                 name: "Kiểm tra mục trùng lặp"
               }
             ]}
+            title={<span>Kiểm tra mục trùng lặp</span>}
           />
         ),
         main: SectionDuplicate
@@ -322,6 +345,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Thông tin mục</span>}
           />
         ),
         main: Section
@@ -336,9 +360,10 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
+            title={<span>Chỉnh sửa mục</span>}
           />
         ),
-        main: NewSection
+        main: EditSection
       },
       {
         path: "/dashboard/chapters/:id/newsection",
@@ -365,6 +390,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tư liệu"
               }
             ]}
+            title={<span>Quản lý tư liệu</span>}
           />
         ),
         main: Docs
@@ -381,6 +407,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tư liệu"
               }
             ]}
+            title={<span>Tư liệu</span>}
           />
         ),
         main: Doc
@@ -414,6 +441,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý biên tập viên"
               }
             ]}
+            title={<span>Quản lý biên tập viên</span>}
           />
         ),
         main: Users
@@ -455,9 +483,11 @@ class DashBoard extends React.Component {
           }
         >
           <div className="page">
-            <div className="qc-logo">Quốc Chí</div>
+            <div className="qc-sidebar-header">
+            <FontAwesomeIcon className="user-avatar" icon={faUserCircle} />
+            {localStorage.name}
+            </div>
             <NavGroup />
-            <div className="qc-sidebar-footer">Phát triển bởi ĐHQG Hà Nội</div>
           </div>
         </div>
         <div className="qc-side main">
@@ -467,28 +497,42 @@ class DashBoard extends React.Component {
                 <FontAwesomeIcon icon={faBars} />
               </NavItem>
               <NavItem>
-                <img src="/img/logo.png" className="qc-header-logo" />
-              </NavItem>
-              <NavItem className="menu">
-                <Link className="nav-link navigation__navlinks" to="/">
-                  Danh mục
-                </Link>
-              </NavItem>
-              <NavItem className="menu">
-                <Link className="nav-link navigation__navlinks" to="">
-                  Tư liệu
-                </Link>
-              </NavItem>
-              <NavItem className="menu">
-                <Link className="nav-link navigation__navlinks" to="/kuechen/">
-                  Bản đồ Việt Nam
+                {/* <img src="/img/logo.png" className="qc-header-logo" /> */}
+                <Link className="nav-link navigation__navlinks">
+                  <b>Quốc Chí Việt Nam</b>
                 </Link>
               </NavItem>
 
-              <UncontrolledDropdown
-                className="ml-auto qc-account"
-                setActiveFromChild
-              >
+              <Nav className="ml-auto">
+                <NavItem className="menu">
+                  <Link className="nav-link navigation__navlinks text" to="/">
+                    Danh mục
+                  </Link>
+                </NavItem>
+                <NavItem className="menu">
+                  <Link className="nav-link navigation__navlinks text" to="">
+                    Tư liệu
+                  </Link>
+                </NavItem>
+                <NavItem className="menu">
+                  <Link
+                    className="nav-link navigation__navlinks text"
+                    to="/kuechen/"
+                  >
+                    Bản đồ Việt Nam
+                  </Link>
+                </NavItem>
+                <NavItem>
+                <Link
+                    className="nav-link navigation__navlinks"
+                    to="/dashboard/search"
+                  >
+                  <FontAwesomeIcon icon={faSearch} />
+                  </Link>
+                </NavItem>
+              </Nav>
+
+              <UncontrolledDropdown className="qc-account" setActiveFromChild>
                 <DropdownToggle tag="a" className="nav-link" caret>
                   {localStorage.name}
                 </DropdownToggle>
@@ -504,12 +548,6 @@ class DashBoard extends React.Component {
             </Nav>
           </div>
 
-          <div className="qc-card qc-breadcrumb">
-            <span>
-              <span className="qc-page-title">Bảng điều khiển</span>|
-              <span className="qc-page-path">
-                <FontAwesomeIcon icon={faHome} />{" "}
-              </span>
               {routes.map((route, index) => (
                 <Route
                   key={index}
@@ -518,8 +556,6 @@ class DashBoard extends React.Component {
                   component={route.sidebar}
                 />
               ))}
-            </span>
-          </div>
 
           <Switch>
             {routes.map((route, index) => (
@@ -531,6 +567,13 @@ class DashBoard extends React.Component {
               />
             ))}
           </Switch>
+
+          <div className="qc-footer">
+            <span className="copyright">Phát triển bởi @ ĐHQG Hà Nội</span>
+            <a href="#">Giới thiệu</a>
+            <a href="#">Điều khoản</a>
+            </div>
+
         </div>
       </Row>
     );

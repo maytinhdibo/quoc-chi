@@ -266,9 +266,9 @@ class CheckDuplicate extends React.Component {
               />
             </FormGroup>
 
-            <div className="qc-align-right">
+            <div className="qc-align-center">
               <button onClick={this.filter} className="qc-btn">
-                <FontAwesomeIcon icon={faSearch} /> {language.search}
+                {language.search}
               </button>
             </div>
           </div>

@@ -138,7 +138,6 @@ class Chapter extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
-              Thông tin chương:{" "}
               {this.state.data.chapter && this.state.data.chapter.name}
             </span>
             <span className="qc-header-tool">
@@ -207,7 +206,7 @@ class Chapter extends React.Component {
         </div>
         <div className="qc-content qc-card">
           <div className="qc-card-header">
-            <span className="qc-header-title">Danh sách chương</span>
+            <span className="qc-header-title">Danh sách mục</span>
             <span className="qc-header-tool">
               <input
                 onChange={evt => this.setState({ filter: evt.target.value })}

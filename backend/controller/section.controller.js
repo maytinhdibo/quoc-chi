@@ -3,8 +3,6 @@ const response = require("../utils/response");
 
 const newSection = async (req, res) => {
   try {
-    console.log(4543);
-
     let chapterId = req.query.id;
     let { name, description } = req.body;
     let newsection = await db.section.create({

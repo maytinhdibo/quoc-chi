@@ -111,7 +111,7 @@ class Book extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
-              Thông tin tập: {this.state.data.book && this.state.data.book.name}
+              {this.state.data.book && this.state.data.book.name}
             </span>
             <span className="qc-header-tool">
               <button>

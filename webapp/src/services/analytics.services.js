@@ -1,5 +1,19 @@
 import app from "../config/app.config";
 
+const overview = () => {
+  const url = app.API_URL + `/analytics/overview`;
+  const request = new Request(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.token
+    }
+  });
+  return fetch(request).then(response => {
+    return response.json();
+  });
+};
+
 const getBooks = query => {
   const url = app.API_URL + `/analytics/books`;
   const request = new Request(url, {
@@ -141,6 +155,7 @@ const getDoc = id => {
 };
 
 const analyticsAPI = {
+  overview,
   getBooks,
   getBook,
   getVolumes,
