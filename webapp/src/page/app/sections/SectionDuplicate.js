@@ -128,7 +128,6 @@ class SectionDuplicate extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
-              Thống kê mục:{" "}
               {this.state.data.section && this.state.data.section.name}
             </span>
           </div>

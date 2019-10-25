@@ -132,7 +132,7 @@ class Section extends React.Component {
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
-              Mục: {this.state.data.section && this.state.data.section.name}
+              {this.state.data.section && this.state.data.section.name}
             </span>
             <span className="qc-header-tool">
               <button>

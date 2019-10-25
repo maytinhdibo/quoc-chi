@@ -13,7 +13,13 @@ import {
 } from "reactstrap";
 import language from "../../config/language";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome, faBars, faSearch, faUserCircle, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faBars,
+  faSearch,
+  faUserCircle,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
 import NavGroup from "../../components/NavGroup";
 import Analytic from "./Analytic";
 import About from "./../docs/About";
@@ -44,21 +50,25 @@ import Section from "./sections/Section";
 import EditSection from "./sections/EditSection";
 import Doc from "./documentations/Doc";
 import NewSection from "./sections/NewSection";
+import UserRouter from "./UserRouter";
 
 class DashBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sidebar: false
+      sidebar: false,
+      role: ""
     };
+
     userAPI
       .get()
       .then(object => {
-        console.log("ahi");
         if (!object.success) {
-          this.signout();
+          this.signout(true);
         } else {
           localStorage.token = object.data.token;
+          localStorage.role = JSON.stringify(object.data.role);
+          this.setState({ role: object.data.role });
         }
       })
       .catch(() => {
@@ -68,9 +78,14 @@ class DashBoard extends React.Component {
   alert = () => {
     alertText("ahihi");
   };
-  signout = () => {
-    auth.logout();
+  signout = expired => {
     localStorage.clear();
+    if (expired) {
+      localStorage.signout = false;
+    } else {
+      localStorage.signout = true;
+    }
+    auth.logout();
     this.props.history.push({
       pathname: "/",
       state: { from: this.props.location }
@@ -85,6 +100,8 @@ class DashBoard extends React.Component {
   componentWillMount() {
     this.unlisten = this.props.history.listen((location, action) => {
       this.setState({ sidebar: false });
+      const role = localStorage.role && JSON.parse(localStorage.role);
+      this.setState({ role });
     });
   }
   componentWillUnmount() {
@@ -94,7 +111,7 @@ class DashBoard extends React.Component {
   render() {
     const routes = [
       {
-        path: "/dashboard",
+        path: "/dashboard/",
         exact: true,
         sidebar: () => (
           <Breadcrumb
@@ -109,7 +126,28 @@ class DashBoard extends React.Component {
               }
             ]}
             title={<span>Thống kê tổng quan</span>}
-          />),
+          />
+        ),
+        main: UserRouter
+      },
+      {
+        path: "/dashboard/analytics",
+        exact: true,
+        sidebar: () => (
+          <Breadcrumb
+            data={[
+              {
+                path: "/dashboard",
+                name: null
+              },
+              {
+                path: "/",
+                name: "Thống kê tổng quan"
+              }
+            ]}
+            title={<span>Thống kê tổng quan</span>}
+          />
+        ),
         main: Analytic
       },
       {
@@ -484,10 +522,10 @@ class DashBoard extends React.Component {
         >
           <div className="page">
             <div className="qc-sidebar-header">
-            <FontAwesomeIcon className="user-avatar" icon={faUserCircle} />
-            {localStorage.name}
+              <FontAwesomeIcon className="user-avatar" icon={faUserCircle} />
+              {localStorage.name}
             </div>
-            <NavGroup />
+            <NavGroup role={this.state.role} />
           </div>
         </div>
         <div className="qc-side main">
@@ -498,7 +536,7 @@ class DashBoard extends React.Component {
               </NavItem>
               <NavItem>
                 {/* <img src="/img/logo.png" className="qc-header-logo" /> */}
-                <Link className="nav-link navigation__navlinks">
+                <Link to="/dashboard" className="nav-link navigation__navlinks">
                   <b>Quốc Chí Việt Nam</b>
                 </Link>
               </NavItem>
@@ -523,11 +561,11 @@ class DashBoard extends React.Component {
                   </Link>
                 </NavItem>
                 <NavItem>
-                <Link
+                  <Link
                     className="nav-link navigation__navlinks"
                     to="/dashboard/search"
                   >
-                  <FontAwesomeIcon icon={faSearch} />
+                    <FontAwesomeIcon icon={faSearch} />
                   </Link>
                 </NavItem>
               </Nav>
@@ -541,21 +579,21 @@ class DashBoard extends React.Component {
                     <Link to={"/dashboard/user/" + localStorage.id}>
                       <li>Tài khoản</li>
                     </Link>
-                    <li onClick={this.signout}>Đăng xuất</li>
+                    <li onClick={()=>this.signout(false)}>Đăng xuất</li>
                   </ul>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>
           </div>
 
-              {routes.map((route, index) => (
-                <Route
-                  key={index}
-                  path={route.path}
-                  exact={route.exact}
-                  component={route.sidebar}
-                />
-              ))}
+          {routes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              component={route.sidebar}
+            />
+          ))}
 
           <Switch>
             {routes.map((route, index) => (
@@ -572,8 +610,7 @@ class DashBoard extends React.Component {
             <span className="copyright">Phát triển bởi @ ĐHQG Hà Nội</span>
             <a href="#">Giới thiệu</a>
             <a href="#">Điều khoản</a>
-            </div>
-
+          </div>
         </div>
       </Row>
     );

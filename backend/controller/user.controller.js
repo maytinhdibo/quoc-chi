@@ -32,12 +32,35 @@ const login = async (req, res) => {
   }
 };
 
+const genRole = async userId => {
+  const adminRole = await db.users_role.findOne({
+    where: {
+      userId,
+      roleId: 1
+    }
+  });
+  if (adminRole) {
+    return {
+      type: "admin",
+      path: "/analytics"
+    };
+  }
+
+  return {
+    type: "none",
+    path: "/books"
+  };
+};
+
 const getRefresh = async (req, res) => {
   try {
+    const userId = req.tokenData.id;
     let token = genToken({
-      id: req.tokenData.id
+      id: userId
     });
-    res.json(response.success({ token }));
+    role = await genRole(userId);
+
+    res.json(response.success({ token, role }));
   } catch (e) {
     res.json(response.fail(e.message));
   }
@@ -89,7 +112,7 @@ const register = async (req, res) => {
       console.log(optionEditorRole);
       if (optionEditorRole.value == 1) {
         //book admin
-        
+
         await db.books_user.create({
           bookId: optionEditorRole.bookId,
           userId: user.id,
