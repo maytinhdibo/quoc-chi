@@ -12,11 +12,46 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../services/analytics.services";
 
+const arrColor = [
+  "#ec407a",
+  "#9c27b0",
+  "#673ab7",
+  "#f44336",
+  "#3f51b5",
+  "#2196f3",
+  "#00bcd4",
+  "#388e3c",
+  "#fb8c00",
+  "#ff5722",
+  "#334455",
+  "#546e7a",
+  "#ffeb3b",
+  "#7c4dff",
+  "#c62828",
+  "#ff4081",
+  "#b388ff",
+  "#870000",
+  "#48a999",
+  "#cddc39",
+  "#e57373",
+  "#80deea",
+  "#bf360c",
+  "#f9683a",
+  "#000051",
+  "#534bae",
+  "#4a148c",
+  "#ffb2ff",
+  "#7a7cff",
+  "#c53d13",
+  "#ff6e40"
+];
+
 class Analytic extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      overview: null
+      overview: null,
+      bubbleData: []
     };
   }
   componentDidMount() {
@@ -25,6 +60,24 @@ class Analytic extends React.Component {
         this.setState({
           overview: object.data
         });
+      }
+    });
+    analyticsAPI.getBooks().then(object => {
+      if (object.success) {
+        const data = object.data.map((data, key) => {
+          return {
+            label: data.name,
+            data: [
+              {
+                x: data.section,
+                y: data.doc,
+                r: data.user
+              }
+            ],
+            backgroundColor: arrColor[key % arrColor.length]
+          };
+        });
+        this.setState({ bubbleData: this.convertData({ datasets: data }) });
       }
     });
   }
@@ -205,7 +258,9 @@ class Analytic extends React.Component {
                 Nhà khoa học
               </span>
               <h3>
-                <CountUp end={this.state.overview && this.state.overview.users} />
+                <CountUp
+                  end={this.state.overview && this.state.overview.users}
+                />
               </h3>
             </Col>
             <Col className="qc-analytic-number" xs={6} md={2}>
@@ -216,7 +271,9 @@ class Analytic extends React.Component {
                 Số lượng mục
               </span>
               <h3>
-                <CountUp end={this.state.overview && this.state.overview.sections} />
+                <CountUp
+                  end={this.state.overview && this.state.overview.sections}
+                />
               </h3>
             </Col>
             <Col className="qc-analytic-number" xs={6} md={2}>
@@ -227,7 +284,9 @@ class Analytic extends React.Component {
                 Hoàn thành
               </span>
               <h3>
-                <CountUp end={this.state.overview && this.state.overview.sections_done} />
+                <CountUp
+                  end={this.state.overview && this.state.overview.sections_done}
+                />
               </h3>
             </Col>
             <Col className="qc-analytic-number" xs={6} md={2}>
@@ -238,7 +297,9 @@ class Analytic extends React.Component {
                 Tư liệu
               </span>
               <h3>
-                <CountUp end={this.state.overview && this.state.overview.docs} />
+                <CountUp
+                  end={this.state.overview && this.state.overview.docs}
+                />
               </h3>
             </Col>
 
@@ -336,7 +397,7 @@ class Analytic extends React.Component {
                     }
                   }
                 }}
-                data={this.convertData(chartData)}
+                data={this.state.bubbleData}
               />
             </div>
           </div>

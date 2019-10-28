@@ -33,28 +33,39 @@ const overview = async (req, res) => {
 const getBooks = async (req, res) => {
   try {
     list = await db.sequelize.query(
-      `SELECT countNumber.*, users.name as user_name, users.id as user_id FROM
-        (SELECT countResult.id, countResult.name, countResult.volume, countResult.chapter, countResult.section, count(books_users.user_id) as user FROM
-        (SELECT c.id, c.name, c.volume, c.chapter, COUNT(sections.id) as section FROM (
-        SELECT v.id, v.name, v.volume, COUNT(chapters.id) as chapter FROM (
-        SELECT books.id, books.name, COUNT(volumes.id) as volume FROM books
-        LEFT JOIN volumes ON volumes.book_id=books.id
-        GROUP BY books.id
-        ) v
-         LEFT JOIN volumes ON volumes.book_id=v.id
-         LEFT JOIN chapters ON chapters.volume_id=volumes.id
-        GROUP BY v.id
-        ) c
-        LEFT  JOIN  volumes ON volumes.book_id=c.id
-        LEFT JOIN chapters ON chapters.volume_id=volumes.id
-        LEFT JOIN sections ON sections.chapter_id=chapters.id
-        GROUP BY c.id
-        ) countResult
-        LEFT JOIN books_users ON countResult.id=books_users.book_id 
-        GROUP BY countResult.id) countNumber
-        LEFT JOIN books_users ON countNumber.id=books_users.book_id AND books_users.book_role_id=1
-        LEFT  JOIN users ON users.id=books_users.user_id
-        ORDER BY countNumber.id`,
+      `SELECT countNumber.*, users.name as user_name, users.id as user_id, doc.docs as doc FROM
+      (SELECT countResult.id, countResult.name, countResult.volume, countResult.chapter, countResult.section, count(books_users.user_id) as user FROM
+      (SELECT c.id, c.name, c.volume, c.chapter, COUNT(sections.id) as section FROM (
+      SELECT v.id, v.name, v.volume, COUNT(chapters.id) as chapter 
+      FROM (
+      SELECT books.id, books.name, COUNT(volumes.id) as volume FROM books
+      LEFT JOIN volumes ON volumes.book_id=books.id
+      GROUP BY books.id
+      ) v
+       LEFT JOIN volumes ON volumes.book_id=v.id
+       LEFT JOIN chapters ON chapters.volume_id=volumes.id
+      GROUP BY v.id
+      ) c
+      LEFT  JOIN  volumes ON volumes.book_id=c.id
+      LEFT JOIN chapters ON chapters.volume_id=volumes.id
+      LEFT JOIN sections ON sections.chapter_id=chapters.id
+      GROUP BY c.id
+      ) countResult
+      LEFT JOIN books_users ON countResult.id=books_users.book_id 
+      GROUP BY countResult.id) countNumber
+      LEFT JOIN books_users ON countNumber.id=books_users.book_id AND books_users.book_role_id=1
+      LEFT  JOIN users ON users.id=books_users.user_id
+
+      LEFT JOIN (SELECT books.id as id, COUNT(sections_docs_logs.documentation_id) as docs
+      FROM sections 
+      JOIN sections_docs_logs ON sections_docs_logs.section_id = sections.id
+      LEFT JOIN chapters ON chapters.id=sections.chapter_id
+      LEFT JOIN volumes ON volumes.id=chapters.id
+      LEFT JOIN books ON books.id=volumes.id
+      WHERE books.id IS NOT NULL
+      GROUP BY books.id) doc ON doc.id = countNumber.id
+
+      ORDER BY countNumber.id`,
       { type: db.sequelize.QueryTypes.SELECT }
     );
     var result = [];
@@ -73,6 +84,7 @@ const getBooks = async (req, res) => {
           volume: e.volume,
           chapter: e.chapter,
           section: e.section,
+          doc: e.doc,
           bookAdmins: [
             {
               id: e.user_id,
