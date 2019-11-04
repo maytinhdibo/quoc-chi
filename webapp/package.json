@@ -70,6 +70,7 @@
     "postcss-normalize": "7.0.1",
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
+    "query-string": "^6.8.3",
     "react": "^16.10.2",
     "react-app-polyfill": "^1.0.4",
     "react-chartjs-2": "^2.8.0",

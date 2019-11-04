@@ -51,6 +51,7 @@ import EditSection from "./sections/EditSection";
 import Doc from "./documentations/Doc";
 import NewSection from "./sections/NewSection";
 import UserRouter from "./UserRouter";
+import EditorDashboard from "./sections/EditorDashboard";
 
 class DashBoard extends React.Component {
   constructor(props) {
@@ -149,6 +150,26 @@ class DashBoard extends React.Component {
           />
         ),
         main: Analytic
+      },
+      {
+        path: "/dashboard/editor",
+        exact: true,
+        sidebar: () => (
+          <Breadcrumb
+            data={[
+              {
+                path: "/dashboard",
+                name: null
+              },
+              {
+                path: "/editor",
+                name: "Công việc"
+              }
+            ]}
+            title={<span>Danh sách mục cần biên soạn</span>}
+          />
+        ),
+        main: EditorDashboard
       },
       {
         path: "/dashboard/about",
@@ -464,6 +485,7 @@ class DashBoard extends React.Component {
                 name: "Tạo mới"
               }
             ]}
+            title={<span>Thêm tư liệu</span>}
           />
         ),
         main: NewDoc

@@ -79,10 +79,22 @@ const getChapters = async (req, res) => {
     }
 }
 
+const getDocType = async (req, res) => {
+    try {
+        var data = await db.doc_type.findAll({
+            attributes: ['id', 'name']
+        })
+        res.json(response.success(data));
+    } catch (e) {
+        res.json(response.fail(e.message));
+    }
+}
+
 module.exports = {
     get,
     getChapters,
     getBooks,
     getVolumes,
-    getUsers
+    getUsers,
+    getDocType
 }

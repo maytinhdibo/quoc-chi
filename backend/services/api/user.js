@@ -8,11 +8,11 @@ const controller = require('../../controller/user.controller')
 
 // router.post("/login", auth.verifyAccessToken, controller.login);
 
-router.post("/users/login", controller.login);
+router.post("/user/login", controller.login);
 router.get("/user", auth.verifyAccessToken, controller.getRefresh);
-router.post("/users", auth.verifyAccessToken, controller.get);
+router.post("/user/getList", auth.verifyAccessToken, controller.get);
 router.get("/user/getInfo", auth.verifyAccessToken, controller.getInfo);
-router.post("/users/register", controller.register);
+router.post("/user/register", controller.register);
 
 // router.get("/user", (req, res, next) => {
 //     if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {

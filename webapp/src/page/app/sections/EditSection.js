@@ -5,11 +5,26 @@ import {
   Input,
   Modal,
   ModalBody,
-  ModalHeader
+  ModalHeader,
+  Row,
+  Col,
 } from "reactstrap";
 
+import { Link as RouteLink } from "react-router-dom";
+import queryString from "query-string";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faPlayCircle,
+  faAngleDown,
+  faAngleUp,
+  faEdit,
+  faClock,
+  faSave,
+  faBookMedical,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
 
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
@@ -41,6 +56,7 @@ import formAPI from "../../../services/form.services";
 import { alertText } from "../../../components/Alert";
 import sectionAPI from "../../../services/section.services";
 import analyticsAPI from "../../../services/analytics.services";
+import moment from "moment";
 
 const editorConfiguration = {
   plugins: [
@@ -62,7 +78,7 @@ const editorConfiguration = {
     ImageStyle,
     ImageToolbar,
     ImageUpload,
-    Base64UploadAdapter
+    Base64UploadAdapter,
   ],
   toolbar: [
     "Heading",
@@ -84,7 +100,7 @@ const editorConfiguration = {
     "Undo",
     "Redo",
     "Paragraph",
-    "Copy"
+    "Copy",
   ],
   heading: {
     options: [
@@ -93,21 +109,21 @@ const editorConfiguration = {
         model: "heading1",
         view: "h1",
         title: "Heading 1",
-        class: "ck-heading_heading1"
+        class: "ck-heading_heading1",
       },
       {
         model: "heading2",
         view: "h2",
         title: "Heading 2",
-        class: "ck-heading_heading2"
-      }
-    ]
+        class: "ck-heading_heading2",
+      },
+    ],
   },
   table: {
-    contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
+    contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
   },
   fontSize: {
-    options: [9, 11, 13, "default", 17, 19, 21]
+    options: [9, 11, 13, "default", 17, 19, 21],
   },
   image: {
     toolbar: [
@@ -116,10 +132,10 @@ const editorConfiguration = {
       "imageStyle:alignLeft",
       "imageStyle:full",
       "imageStyle:side",
-      "imageStyle:alignRight"
+      "imageStyle:alignRight",
     ],
-    styles: ["full", "alignLeft", "alignRight"]
-  }
+    styles: ["full", "alignLeft", "alignRight"],
+  },
 };
 
 class EditSection extends React.Component {
@@ -127,7 +143,12 @@ class EditSection extends React.Component {
     content: "",
     description: "",
     name: "",
-    modalPreview: false
+    modalPreview: false,
+    modalInfo: false,
+    modalListDraft: false,
+    fullScreen: true,
+    listVersion: [],
+    menuTool: false,
   };
   handleSection = actorValue => {
     this.setState({ actorValue });
@@ -141,7 +162,7 @@ class EditSection extends React.Component {
         this.setState({
           name,
           description,
-          content: content ? content : ""
+          content: content ? content : "",
         });
       } else {
         alertText(object.reason);
@@ -149,13 +170,62 @@ class EditSection extends React.Component {
     });
   }
 
-  editSection = () => {
+  toggleListDraft = () => {
+    if (!this.state.modalListDraft) {
+      sectionAPI.getListDraft(this.props.match.params.id).then(object => {
+        if (object.success) {
+          this.setState({ listVersion: object.data });
+        }
+      });
+    }
+    this.setState({ modalListDraft: !this.state.modalListDraft });
+  };
+
+  publishSection = () => {
     let { description, name, content } = this.state;
+    let version = queryString.parse(this.props.location.search).version;
     sectionAPI
-      .editSection({ description, name, content }, this.props.match.params.id)
+      .publishSection({ description, name, content }, this.props.match.params.id, version)
       .then(object => {
         if (object.success) {
           alertText("Sửa đổi thành công.");
+        } else {
+          alertText(object.reason);
+        }
+      })
+      .catch(e => {
+        alertText(e.message);
+      });
+  };
+
+  saveNewDraft = () => {
+    let { description, name, content } = this.state;
+    sectionAPI
+      .saveNewDraft({ description, name, content }, this.props.match.params.id)
+      .then(object => {
+        if (object.success) {
+          alertText("Bản nháp mới đã tạo thành công.");
+        } else {
+          alertText(object.reason);
+        }
+      })
+      .catch(e => {
+        alertText(e.message);
+      });
+  };
+
+  saveDraft = () => {
+    let { description, name, content } = this.state;
+    let version = queryString.parse(this.props.location.search).version;
+    sectionAPI
+      .saveDraft(
+        { description, name, content },
+        this.props.match.params.id,
+        version
+      )
+      .then(object => {
+        if (object.success) {
+          alertText("Bản nháp được lưu thành công.");
         } else {
           alertText(object.reason);
         }
@@ -175,46 +245,193 @@ class EditSection extends React.Component {
 
   render() {
     return (
-      <div>
-        <Modal
-          toggle={this.toggleModal}
-          size="lg"
-          isOpen={this.state.modalPreview}
-        >
-          <ModalHeader toggle={this.toggleModal}>Xem trước</ModalHeader>
-          <ModalBody>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: this.state.content
+      <div
+        className={
+          this.state.fullScreen ? "qc-rich-editor" : "qc-rich-editor mini"
+        }
+      >
+        <div style={{ position: "relative", width: "100%", height: "100%" }}>
+          <Modal
+            toggle={this.toggleModal}
+            size="lg"
+            isOpen={this.state.modalPreview}
+          >
+            <ModalHeader toggle={this.toggleModal}>Xem trước</ModalHeader>
+            <ModalBody>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: this.state.content,
+                }}
+              ></div>
+            </ModalBody>
+          </Modal>
+
+          <Modal
+            toggle={this.toggleListDraft}
+            size="lg"
+            isOpen={this.state.modalListDraft}
+          >
+            <ModalHeader toggle={this.toggleListDraft}>
+              Lịch sử phiên bản
+            </ModalHeader>
+            <ModalBody className="modal-version-list">
+              {this.state.listVersion.map(data => {
+                return (
+                  <div className="version-item">
+                    <span className="id-badge">{data.id}</span>
+
+                    <div style={{ flex: 1 }}>
+                      <RouteLink
+                        to={
+                          "/dashboard/sections/edit/" +
+                          this.props.match.params.id +
+                          "?version=" +
+                          data.id
+                        }
+                      >
+                        <b className="name">{data.name}</b>
+                      </RouteLink>
+                      <RouteLink
+                        to={"/dashboard/user/" + (data.user && data.user.id)}
+                        className="editor-name"
+                      >
+                        {data.user && data.user.name}
+                      </RouteLink>
+                    </div>
+                    <div className="status">
+                      {data.published == 1 ? (
+                        <span className="status-btn published">
+                          Đã xuất bản
+                        </span>
+                      ) : (
+                        <span className="status-btn draft">Bản lưu nháp</span>
+                      )}
+                    </div>
+                    <div className="date">
+                      {moment(data.updated_at).format("h:mm:ss DD/MM/YYYY")}
+                    </div>
+                  </div>
+                );
+              })}
+            </ModalBody>
+          </Modal>
+
+          <Modal
+            toggle={() => {
+              this.setState({ modalInfo: !this.state.modalInfo });
+            }}
+            size="lg"
+            isOpen={this.state.modalInfo}
+          >
+            <ModalHeader
+              toggle={() => {
+                this.setState({ modalInfo: !this.state.modalInfo });
               }}
-            ></div>
-          </ModalBody>
-        </Modal>
-        <div className="qc-card-header">Chỉnh sửa mục</div>
-        <div className="qc-content">
-          <FormGroup>
-            <Label for="exampleEmail">Tên mục</Label>
-            <Input
-              value={this.state.name}
-              onChange={evt => this.setState({ name: evt.target.value })}
-              type="text"
-              placeholder="Nhập tên mục mới"
-            />
-          </FormGroup>
+            >
+              Thông tin mục
+            </ModalHeader>
+            <ModalBody>
+              <FormGroup>
+                <Label for="exampleEmail">Tên mục</Label>
+                <Input
+                  value={this.state.name}
+                  onChange={evt => this.setState({ name: evt.target.value })}
+                  type="text"
+                  placeholder="Nhập tên mục mới"
+                />
+              </FormGroup>
 
-          <FormGroup>
-            <Label>Giới thiệu</Label>
-            <Input
-              value={this.state.description}
-              onChange={evt => this.setState({ description: evt.target.value })}
-              style={{ height: "150px" }}
-              type="textarea"
-              name="text"
-            />
-          </FormGroup>
+              <FormGroup>
+                <Label>Giới thiệu</Label>
+                <Input
+                  value={this.state.description}
+                  onChange={evt =>
+                    this.setState({ description: evt.target.value })
+                  }
+                  style={{ height: "150px" }}
+                  type="textarea"
+                  name="text"
+                />
+              </FormGroup>
+            </ModalBody>
+          </Modal>
 
-          <Label>Biên soạn</Label>
+          <div className="qc-header">
+            <div
+              onClick={() => {
+                this.setState({ fullScreen: !this.state.fullScreen });
+              }}
+              className="qc-gr-btn window"
+            >
+              <button class="bar-btn">
+                <FontAwesomeIcon
+                  icon={this.state.fullScreen ? faAngleDown : faAngleUp}
+                />
+              </button>
+            </div>
+            <span className="qc-title">{this.state.name}</span>
+            <div className="qc-gr-btn">
+              <button onClick={this.previewSection} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faPlayCircle} />
+                </span>
+                Xem trước
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({ menuTool: !this.state.menuTool });
+                }}
+                style={{ width: "40px" }}
+                class="bar-btn"
+              >
+                <FontAwesomeIcon icon={faBars} />
+              </button>
+            </div>
 
+            <div
+              style={{
+                display: this.state.menuTool ? "block" : "none",
+              }}
+              className="menu-tool"
+            >
+              <button onClick={this.toggleListDraft} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faClock} />
+                </span>
+                Lịch sử phiên bản
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({ modalInfo: !this.state.modalInfo });
+                }}
+                class="bar-btn"
+              >
+                <span className="icon">
+                  <FontAwesomeIcon icon={faEdit} />
+                </span>
+                Thông tin
+              </button>
+
+              <button onClick={this.saveDraft} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faSave} />
+                </span>
+                Lưu nháp
+              </button>
+              <button onClick={this.saveNewDraft} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faBookMedical} />
+                </span>
+                Lưu bản nháp mới
+              </button>
+              <button onClick={this.publishSection} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+                Xuất bản
+              </button>
+            </div>
+          </div>
           <CKEditor
             editor={ClassicEditor}
             config={editorConfiguration}
@@ -234,27 +451,6 @@ class EditSection extends React.Component {
               console.log("Focus.", editor);
             }}
           />
-        </div>
-        <div className="qc-align-right qc-content">
-          <button
-            style={{
-              marginRight: "3px",
-              background: "#005cb2"
-            }}
-            onClick={this.previewSection}
-            class="qc-btn"
-          >
-            <span className="icon">
-              <FontAwesomeIcon icon={faPlayCircle} />
-            </span>
-            Xem trước
-          </button>
-          <button onClick={this.editSection} class="qc-btn">
-            <span className="icon">
-              <FontAwesomeIcon icon={faCheck} />
-            </span>
-            {language.edit}
-          </button>
         </div>
       </div>
     );

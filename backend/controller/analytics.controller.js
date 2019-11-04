@@ -74,7 +74,7 @@ const getBooks = async (req, res) => {
       if (result[e.id]) {
         result[e.id].bookAdmins.push({
           id: e.user_id,
-          name: e.user_name
+          name: e.user_name,
         });
       } else {
         result[e.id] = {
@@ -88,9 +88,9 @@ const getBooks = async (req, res) => {
           bookAdmins: [
             {
               id: e.user_id,
-              name: e.user_name
-            }
-          ]
+              name: e.user_name,
+            },
+          ],
         };
       }
     });
@@ -108,22 +108,22 @@ const getBook = async (req, res) => {
     let bookid = req.query.id;
     var book = await db.book.findOne({
       where: {
-        id: bookid
+        id: bookid,
       },
-      attributes: ["name", "description"]
+      attributes: ["name", "description"],
     });
     var bookAdmin = await db.books_user.findAll({
       where: {
         book_id: bookid,
-        book_role_id: 1
+        book_role_id: 1,
       },
       attributes: [],
       include: [
         {
           attributes: ["name", "id"],
-          model: db.user
-        }
-      ]
+          model: db.user,
+        },
+      ],
     });
     res.json(response.success({ book, bookAdmin }));
   } catch (e) {
@@ -168,15 +168,15 @@ getVolumes = async (req, res) => {
 
     let volumeAdmin = await db.volume.findAll({
       where: {
-        book_id: bookid
+        book_id: bookid,
       },
       attributes: ["id"],
       include: [
         {
           attributes: ["id", "name"],
-          model: db.user
-        }
-      ]
+          model: db.user,
+        },
+      ],
     });
     var merge = _.merge(
       countChapter,
@@ -194,27 +194,28 @@ const getVolume = async (req, res) => {
     let volumeid = req.query.id;
     var volume = await db.volume.findOne({
       where: {
-        id: volumeid
+        id: volumeid,
       },
-      attributes: ["name", "description"]
+      attributes: ["name", "description"],
     });
     var volumeAdmin = await db.users_volume.findAll({
       where: {
-        volume_id: volumeid
+        volume_id: volumeid,
       },
       attributes: [],
       include: [
         {
           attributes: ["name", "id"],
-          model: db.user
-        }
-      ]
+          model: db.user,
+        },
+      ],
     });
     res.json(response.success({ volume, volumeAdmin }));
   } catch (e) {
     res.json(response.fail(e.message));
   }
 };
+
 getChapters = async (req, res) => {
   try {
     let bookid = req.query.id;
@@ -253,9 +254,9 @@ const getChapter = async (req, res) => {
     let chapterId = req.query.id;
     var chapter = await db.chapter.findOne({
       where: {
-        id: chapterId
+        id: chapterId,
       },
-      attributes: ["name", "description", "introduction"]
+      attributes: ["name", "description", "introduction"],
     });
     res.json(response.success({ chapter }));
   } catch (e) {
@@ -281,7 +282,7 @@ const getSections = async (req, res) => {
     LEFT JOIN (SELECT count(*) as count, section_id FROM sections_docs_logs GROUP BY section_id) T1 ON T1.section_id = s.id
     WHERE s.chapter_id = ` + chapterId,
       {
-        type: db.sequelize.QueryTypes.SELECT
+        type: db.sequelize.QueryTypes.SELECT,
       }
     );
 
@@ -297,18 +298,75 @@ const getSections = async (req, res) => {
             : 0,
           reviewer: {
             id: _.get(_.find(v, "reviewer_id"), "reviewer_id"),
-            name: _.get(_.find(v, "reviewer_name"), "reviewer_name")
+            name: _.get(_.find(v, "reviewer_name"), "reviewer_name"),
           },
           state: {
             id: _.get(_.find(v, "state_id"), "state_id"),
-            name: _.get(_.find(v, "state_name"), "state_name")
+            name: _.get(_.find(v, "state_name"), "state_name"),
           },
           users: _.map(v, "user_id").map((data, key) => {
             return {
               id: data,
-              name: _.map(v, "user_name")[key]
+              name: _.map(v, "user_name")[key],
             };
-          })
+          }),
+        };
+      })
+      .value();
+
+    res.json(response.success({ sections: result }));
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+};
+
+const getEditorSections = async (req, res) => {
+  try {
+    let chapterId = req.query.id;
+    var sections = await db.sequelize.query(
+      `
+    SELECT s.id as section_id, s.name as section_name,
+    u.id as user_id, u.name as user_name,
+    r.id as reviewer_id, r.name as reviewer_name, 
+    s.section_state_id as state_id, ss.name as state_name, s.updated_at,
+    T1.count as document_count
+    FROM sections s
+    INNER JOIN sections_users su ON su.section_id=s.id AND su.user_id = ` +
+        req.tokenData.id +
+    `
+    LEFT JOIN users u ON su.user_id = u.id
+    LEFT JOIN users r ON s.reviewer_id = r.id
+    LEFT JOIN section_states ss ON s.section_state_id = ss.id
+    LEFT JOIN (SELECT count(*) as count, section_id FROM sections_docs_logs GROUP BY section_id) T1 ON T1.section_id = s.id`,
+      {
+        type: db.sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    var result = _.chain(sections)
+      .groupBy("section_id")
+      .map(function(v, i) {
+        return {
+          id: i,
+          name: _.get(_.find(v, "section_name"), "section_name"),
+          updated_at: _.get(_.find(v, "updated_at"), "updated_at"),
+          document_count: _.get(_.find(v, "document_count"), "document_count")
+            ? _.get(_.find(v, "document_count"), "document_count")
+            : 0,
+          reviewer: {
+            id: _.get(_.find(v, "reviewer_id"), "reviewer_id"),
+            name: _.get(_.find(v, "reviewer_name"), "reviewer_name"),
+          },
+          state: {
+            id: _.get(_.find(v, "state_id"), "state_id"),
+            name: _.get(_.find(v, "state_name"), "state_name"),
+          },
+          users: _.map(v, "user_id").map((data, key) => {
+            return {
+              id: data,
+              name: _.map(v, "user_name")[key],
+            };
+          }),
         };
       })
       .value();
@@ -324,16 +382,16 @@ const getSection = async (req, res) => {
     let sectionId = req.query.id;
     var section = await db.section.findOne({
       where: {
-        id: sectionId
+        id: sectionId,
       },
       include: [
         {
           model: db.user,
           as: "reviewer",
-          attributes: ["id", "name"]
-        }
+          attributes: ["id", "name"],
+        },
       ],
-      attributes: ["name", "description", "content"]
+      attributes: ["name", "description", "content"],
     });
     res.json(response.success({ section }));
   } catch (e) {
@@ -361,7 +419,7 @@ const getDocs = async (req, res) => {
       ON T1.id=d.id
    `,
       {
-        type: db.sequelize.QueryTypes.SELECT
+        type: db.sequelize.QueryTypes.SELECT,
       }
     );
     documentations = documentations.map(object => {
@@ -370,18 +428,18 @@ const getDocs = async (req, res) => {
         name: object.doc_name,
         user: {
           id: object.user_id,
-          name: object.user_name
+          name: object.user_name,
         },
         approver: {
           id: object.approver_id,
-          name: object.approver_name
+          name: object.approver_name,
         },
         state: {
           id: object.state_id,
-          name: object.state_name
+          name: object.state_name,
         },
         total_section: object.total_section,
-        updated_at: object.updated_at
+        updated_at: object.updated_at,
       };
     });
     res.json(response.success({ documentations }));
@@ -414,7 +472,7 @@ const getDoc = async (req, res) => {
         id +
         ` LIMIT 1`,
       {
-        type: db.sequelize.QueryTypes.SELECT
+        type: db.sequelize.QueryTypes.SELECT,
       }
     );
     if (documentation.length == 0) {
@@ -428,18 +486,18 @@ const getDoc = async (req, res) => {
       url: object.url,
       user: {
         id: object.user_id,
-        name: object.user_name
+        name: object.user_name,
       },
       approver: {
         id: object.approver_id,
-        name: object.approver_name
+        name: object.approver_name,
       },
       state: {
         id: object.state_id,
-        name: object.state_name
+        name: object.state_name,
       },
       total_section: object.total_section,
-      updated_at: object.updated_at
+      updated_at: object.updated_at,
     };
     res.json(response.success(documentation));
   } catch (e) {
@@ -458,5 +516,6 @@ module.exports = {
   getSections,
   getSection,
   getDocs,
-  getDoc
+  getDoc,
+  getEditorSections,
 };

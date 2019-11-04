@@ -9,6 +9,6 @@ router.get("/users", controller.getUsers);
 router.get("/books", controller.getBooks);
 router.get("/volumes", controller.getVolumes);
 router.get("/chapters", controller.getChapters);
-
+router.get("/documentation/type", controller.getDocType);
 
 module.exports = router;

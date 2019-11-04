@@ -48,7 +48,7 @@ const genRole = async userId => {
 
   return {
     type: "none",
-    path: "/books"
+    path: "/editor"
   };
 };
 

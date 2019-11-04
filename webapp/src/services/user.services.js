@@ -1,7 +1,7 @@
 import app from './../config/app.config';
 
 const login = ({ email, password }) => {
-    const url = app.API_URL + `/users/login`;
+    const url = app.API_URL + `/user/login`;
     const request = new Request(url, {
         method: 'POST',
         headers: {
@@ -20,7 +20,7 @@ const login = ({ email, password }) => {
 
 const createUser = (datauser) => {
     console.log(datauser);
-    const url = app.API_URL + `/users/register`;
+    const url = app.API_URL + `/user/register`;
     const request = new Request(url, {
         method: 'POST',
         headers: {
@@ -50,7 +50,7 @@ const get = () => {
 }
 
 const getList = (bookValue, volumeValue, chapterValue) => {
-    const url = app.API_URL + `/users`;
+    const url = app.API_URL + `/user/getList`;
     const request = new Request(url, {
         method: 'POST',
         headers: {

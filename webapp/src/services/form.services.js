@@ -71,12 +71,27 @@ const getChapters = (idVolume) => {
         });
 }
 
+
+const getDocType = () => {
+    const url = app.API_URL + `/form-data/documentation/type`;
+    const request = new Request(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return fetch(request)
+        .then(response => {
+            return response.json();
+        });
+}
 const formAPI = {
     get,
     getBooks,
     getVolumes,
     getChapters,
-    getUsers
+    getUsers,
+    getDocType
 }
 
 export default formAPI;

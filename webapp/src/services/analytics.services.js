@@ -126,6 +126,20 @@ const getSection = sectionId => {
   });
 };
 
+const getEditorSections = () => {
+  const url = app.API_URL + `/analytics/editor`;
+  const request = new Request(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.token
+    }
+  });
+  return fetch(request).then(response => {
+    return response.json();
+  });
+};
+
 const getDocs = () => {
   const url = app.API_URL + `/analytics/docs`;
   const request = new Request(url, {
@@ -164,6 +178,7 @@ const analyticsAPI = {
   getChapter,
   getSections,
   getSection,
+  getEditorSections,
   getDocs,
   getDoc
 };

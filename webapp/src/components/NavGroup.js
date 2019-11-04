@@ -7,7 +7,7 @@ import {
   faCogs,
   faChartBar,
   faSearch,
-  faFileContract
+  faFileContract,
 } from "@fortawesome/free-solid-svg-icons";
 import { NavLink, Link } from "react-router-dom";
 class NavGroup extends React.Component {
@@ -16,16 +16,30 @@ class NavGroup extends React.Component {
       <div>
         <ul className="qc-sidebar-ul">
           <label>Quản lý</label>
-          <NavLink activeClassName="selected" to="/dashboard/books/">
-            <li>
-              <span className="icon">
-                <FontAwesomeIcon icon={faBook} />
-              </span>
-              Tập
-            </li>
-          </NavLink>
+
+          {this.props.role.type == "admin" ? (
+            <NavLink activeClassName="selected" to="/dashboard/books/">
+              <li>
+                <span className="icon">
+                  <FontAwesomeIcon icon={faBook} />
+                </span>
+                Tập
+              </li>
+            </NavLink>
+          ) : null}
+
+          {this.props.role.type != "admin" ? (
+            <NavLink activeClassName="selected" to="/dashboard/editor/">
+              <li>
+                <span className="icon">
+                  <FontAwesomeIcon icon={faBook} />
+                </span>
+                Mục biên soạn
+              </li>
+            </NavLink>
+          ) : null}
+
           <NavLink activeClassName="selected" to="/dashboard/documentations/">
-            {" "}
             <li>
               <span className="icon">
                 <FontAwesomeIcon icon={faFileAlt} />
@@ -34,7 +48,6 @@ class NavGroup extends React.Component {
             </li>
           </NavLink>
           <NavLink activeClassName="selected" to="/dashboard/users/">
-            {" "}
             <li>
               <span className="icon">
                 <FontAwesomeIcon icon={faUsers} />
@@ -63,7 +76,7 @@ class NavGroup extends React.Component {
               <li>
                 <span className="icon">
                   <FontAwesomeIcon icon={faSearch} />
-                </span>{" "}
+                </span>
                 Tìm kiếm
               </li>
             </NavLink>
@@ -71,7 +84,7 @@ class NavGroup extends React.Component {
               <li>
                 <span className="icon">
                   <FontAwesomeIcon icon={faFileContract} />
-                </span>{" "}
+                </span>
                 Rà soát trùng lặp
               </li>
             </NavLink>

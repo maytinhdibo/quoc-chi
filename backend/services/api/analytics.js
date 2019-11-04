@@ -15,5 +15,6 @@ router.get("/sections", auth.verifyAccessToken, controller.getSections);
 router.get("/section", auth.verifyAccessToken, controller.getSection);
 router.get("/docs", auth.verifyAccessToken, controller.getDocs);
 router.get("/doc", auth.verifyAccessToken, controller.getDoc);
+router.get("/editor", auth.verifyAccessToken, controller.getEditorSections);
 
 module.exports = router;
