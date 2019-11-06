@@ -2,7 +2,7 @@
   "name": "sequelize-demo",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
@@ -18,7 +18,9 @@
     "json-stringify-safe": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
+    "mysql": "^2.17.1",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.8.12"
+    "sequelize": "^5.8.12",
+    "sequelize-cli": "^5.5.1"
   }
 }
