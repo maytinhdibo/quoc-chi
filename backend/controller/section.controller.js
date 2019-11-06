@@ -21,12 +21,42 @@ const publishSection = async (req, res) => {
   try {
     let sectionid = req.query.id;
     let { name, description, content } = req.body;
+    let draftid = req.query.version;
+
+    if (!draftid) throw new Error("Phiên bản không tồn tại!");
 
     let section = await db.section.findOne({
       where: {
         id: sectionid,
       },
     });
+
+    let draft = await db.sequelize.query(
+      "SELECT * FROM section_drafts WHERE id = " + draftid + " LIMIT 1",
+      {
+        type: db.sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    if (draft.length == 0) throw new Error("Phiên bản không tồn tại!");
+
+    await db.sequelize.query(
+      `UPDATE section_drafts
+      SET user_id = ?, 
+      name = ?, 
+      description = ?, 
+      content = ?,
+      published = ?,
+      updated_at = CURRENT_TIMESTAMP()
+      WHERE section_id = ` +
+        sectionid +
+        ` AND id = ` +
+        draftid,
+      {
+        replacements: [req.tokenData.id, name, description, content, 1],
+        type: db.sequelize.QueryTypes.UPDATE,
+      }
+    );
 
     if (section) {
       await section.update({
@@ -146,6 +176,7 @@ const saveDraft = async (req, res) => {
         name = ?, 
         description = ?, 
         content = ?,
+        published = ?,
         updated_at = CURRENT_TIMESTAMP()
         WHERE section_id = ` +
           sectionid +
@@ -153,7 +184,7 @@ const saveDraft = async (req, res) => {
           draftid,
         {
           replacements: [req.tokenData.id, name, description, content, 0],
-          type: db.sequelize.QueryTypes.INSERT,
+          type: db.sequelize.QueryTypes.UPDATE,
         }
       );
     } else {

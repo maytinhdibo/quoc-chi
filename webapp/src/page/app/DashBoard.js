@@ -6,19 +6,15 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
   Nav,
   Row,
-  Col
 } from "reactstrap";
 import language from "../../config/language";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHome,
   faBars,
   faSearch,
   faUserCircle,
-  faUser
 } from "@fortawesome/free-solid-svg-icons";
 import NavGroup from "../../components/NavGroup";
 import Analytic from "./Analytic";
