@@ -5,7 +5,8 @@ const createVolume = (data,bookid) => {
     const request = new Request(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.token
         },
         body: JSON.stringify(data)
     })
@@ -20,7 +21,8 @@ const editVolume = (databook, id) => {
     const request = new Request(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.token
         },
         body: JSON.stringify(databook)
     })

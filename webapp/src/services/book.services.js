@@ -5,7 +5,8 @@ const createBook = (databook) => {
     const request = new Request(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.token
         },
         body: JSON.stringify(databook)
     })
@@ -20,7 +21,8 @@ const editBook = (databook, id) => {
     const request = new Request(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'token': localStorage.token
         },
         body: JSON.stringify(databook)
     })

@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-demo",
+  "name": "quocchi-backend",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -11,16 +11,21 @@
   "license": "ISC",
   "dependencies": {
     "array-merge-by-key": "^1.0.1",
-    "bcrypt": "^3.0.6",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "html-to-text": "^5.1.1",
     "json-stringify-safe": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mysql": "^2.17.1",
     "mysql2": "^1.6.5",
+<<<<<<< HEAD
     "sequelize": "^5.8.12",
     "sequelize-cli": "^5.5.1"
+=======
+    "sequelize": "^5.19.0"
+>>>>>>> dac7171822e8efcef540a544f4d95f69c093d5a9
   }
 }

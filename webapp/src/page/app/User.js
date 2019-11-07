@@ -35,7 +35,7 @@ class User extends React.Component {
     render() {
         let role = this.state.book_roles.filter(ele=>(ele.book_role && ele.book_role.name != "No role")).map(ele => {
                 return <div>{ele.book_role.name} {"tập "}
-                    <Link to={"../book/" + ele.book.id}>{ele.book.name}</Link>
+                    <Link to={"../books/detail/" + ele.book.id}>{ele.book.name}</Link>
                 </div>;
         })
         return (
@@ -44,7 +44,10 @@ class User extends React.Component {
                     Thông tin tài khoản
       </div>
                 <Row>
-                    <Col className="column" md="4">
+                    <Col style={{
+                        overflowWrap: "break-word"
+                    }}
+                     className="column" md="4">
                         <FontAwesomeIcon className="user-avatar" icon={faUserCircle} />
                         <br />
                         <h4>{this.state.academic_title.name}{this.state.academic_title.name ? ". " : ""}{this.state.name}</h4>

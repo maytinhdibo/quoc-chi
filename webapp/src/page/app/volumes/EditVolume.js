@@ -32,7 +32,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
-import '@ckeditor/ckeditor5-build-classic/build/translations/vi';
 import formAPI from '../../../services/form.services';
 import { alertText } from '../../../components/Alert';
 import volumeAPI from '../../../services/volume.services';

@@ -91,6 +91,7 @@ export default class Pagination extends React.Component {
         <div className="Table__visiblePagesWrapper">
           {visiblePages.map((page, index, array) => {
             return (
+              <span>{array[index - 1] + 2 < page ? `...` : ""}
               <PageButtonComponent
                 key={page}
                 className={
@@ -100,8 +101,9 @@ export default class Pagination extends React.Component {
                 }
                 onClick={this.changePage.bind(null, page)}
               >
-                {array[index - 1] + 2 < page ? `...${page}` : page}
+                {page}
               </PageButtonComponent>
+              </span>
             );
           })}
         </div>

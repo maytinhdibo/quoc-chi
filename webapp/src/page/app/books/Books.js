@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ReactLoading from "react-loading";
 import { faPlus, faFilePdf, faChartBar, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import analyticsAPI from '../../../services/analytics.services';
+import { ProgressBar } from '../../../components/ProgressBar';
+import language from "../../../config/language";
 
 class Books extends React.Component {
     constructor(props) {
@@ -36,35 +38,6 @@ class Books extends React.Component {
         } else return "";
     }
     render() {
-        const data = [{
-            name: 'Nguyen Van A',
-            age: 26,
-            friend: {
-                name: 'Do Van C',
-                age: 23,
-            }
-        }, {
-            name: 'Dao Thi B',
-            age: 22,
-            friend: {
-                name: 'Ngo Trung V',
-                age: 24,
-            }
-        }, {
-            name: 'Tran Duc C',
-            age: 25,
-            friend: {
-                name: 'Ngo Thanh E',
-                age: 25,
-            }
-        }, {
-            name: 'Le Tien N',
-            age: 27,
-            friend: {
-                name: 'Cao Cong G',
-                age: 24,
-            }
-        }];
 
         const columns = [
             {
@@ -102,11 +75,16 @@ class Books extends React.Component {
                 accessor: 'user',
                 Cell: props => <span className='number'>{props.value}</span>
 
+            }, {
+                Header: 'Hoàn thành',
+                accessor: 'user',
+                Cell: props => <ProgressBar value={Math.random()} />
             }]
+
         return (
             <div className="qc-content qc-card">
                 <div className="qc-card-header">
-                    <span className="qc-header-title">Quản lý tập</span>
+                    <span className="qc-header-title">Danh sách tập</span>
                     <span className="qc-header-tool">
                         <button>Hành động <span className="icon"><FontAwesomeIcon icon={faChevronDown} /></span></button>
                         <div className="tool-dropdown">
@@ -135,6 +113,7 @@ class Books extends React.Component {
                         minRows={1}
                         data={this.state.data && this.state.data.filter(object => (object.name ? (object.name.toUpperCase().indexOf(this.state.filter.toUpperCase()) != -1) : true))}
                         columns={columns}
+                        {...language.table}
                     />
                 </div> : <ReactLoading className="qc-loading" type="spin" color="#888" />}
             </div>

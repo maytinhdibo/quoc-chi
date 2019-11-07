@@ -12,9 +12,10 @@ module.exports.success = (data) => {
     }
 };
 
-module.exports.fail = (err) => {
+module.exports.fail = (err, code) => {
     return {
         success: false,
         reason: err,
+        code: code
     }
 };
