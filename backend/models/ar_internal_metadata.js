@@ -3,18 +3,20 @@ module.exports = function(sequelize, Sequelize) {
       "ar_internal_metadata",
       {
         key: {
-          type: Sequelize.VARCHAR(225),
+          type: Sequelize.STRING,
           primaryKey: true,
         },
         value: {
-            type:  Sequelize.VARCHAR(225),
+            type:  Sequelize.STRING,
         },
-        created_at: {
-            type:  Sequelize.DATETIME,
-          },
-        updated_at: {
-            type:  Sequelize.DATETIME,
-          },
+        createdAt: {
+          field: 'created_at',
+          type: Sequelize.DATE,
+        },
+        updatedAt: {
+          field: 'updated_at',
+          type: Sequelize.DATE,
+        },
       },
     
     );

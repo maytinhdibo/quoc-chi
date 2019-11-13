@@ -21,7 +21,7 @@ const path = require("path")
 
 app.use(express.static(path.join(__dirname, '/../webapp/build/')));
 
-app.use('/api', apiRouter);
+//app.use('/api', apiRouter);
 
 
 // add a basic route

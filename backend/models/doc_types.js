@@ -13,6 +13,9 @@ module.exports = function(sequelize, Sequelize) {
     },
     { timestamps: false }
   );
+  DocType.associate= function(models){
+    DocType.belongsTo(models.documentation);
+  }
 
   return DocType;
 };

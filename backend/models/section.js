@@ -19,7 +19,7 @@ module.exports = function(sequelize, Sequelize) {
     },
     chapterId: {
       field: "chapter_id",
-      type: Sequelize.STRING
+      type: Sequelize.INTEGER
     },
     reviewerId: {
       field: "reviewer_id",

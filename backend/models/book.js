@@ -1,5 +1,11 @@
 module.exports = function (sequelize, Sequelize) { 
     const Book = sequelize.define("book", {
+        id: {
+            type: Sequelize.BIGINT,
+            allowNull: false,
+            primaryKey: true,
+            field: "id"
+          },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
@@ -19,6 +25,7 @@ module.exports = function (sequelize, Sequelize) {
     Book.associate = function (models) {
         Book.belongsToMany(models.user,{ through: models.books_user });
         Book.hasMany(models.volume);
+        Book.hasMany(models.books_docs);
     };
 
     return Book;

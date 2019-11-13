@@ -21,11 +21,6 @@
     "lodash": "^4.17.15",
     "mysql": "^2.17.1",
     "mysql2": "^1.6.5",
-<<<<<<< HEAD
-    "sequelize": "^5.8.12",
-    "sequelize-cli": "^5.5.1"
-=======
     "sequelize": "^5.19.0"
->>>>>>> dac7171822e8efcef540a544f4d95f69c093d5a9
   }
 }

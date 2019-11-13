@@ -22,7 +22,7 @@ module.exports = function (sequelize, Sequelize) {
         },
         bookId: {
             field: 'book_id',
-            type: Sequelize.INTEGER
+            type: Sequelize.BIGINT,
         }
     });
 

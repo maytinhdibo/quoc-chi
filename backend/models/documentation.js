@@ -97,6 +97,10 @@ module.exports = function(sequelize, Sequelize) {
       allowNull: true,
       defaultValue: "0",
       field: "store_location"
+    },
+    doc_type:{
+      type: Sequelize.INTEGER,
+      field: "doc_type",
     }
   });
 
@@ -104,6 +108,7 @@ module.exports = function(sequelize, Sequelize) {
     Documentation.belongsToMany(models.section, {
       through: models.sections_docs_logs
     });
+    Documentation.hasMany(models.doc_type);
   };
 
   return Documentation;
