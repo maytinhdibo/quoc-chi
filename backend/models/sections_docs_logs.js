@@ -48,6 +48,8 @@ module.exports = function(sequelize, Sequelize) {
 	sectionsDocsLogs.associate = function (models) {
     sectionsDocsLogs.belongsTo(models.section);
     sectionsDocsLogs.belongsTo(models.documentation);
+    sectionsDocsLogs.belongsTo(models.sections_log, { forginKey : "sections_log_id"});
+
   }
 
   return sectionsDocsLogs;

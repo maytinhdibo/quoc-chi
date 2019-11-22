@@ -2,6 +2,20 @@
 module.exports = function(sequelize, Sequelize) {
   //usercreate
   const User = sequelize.define("user", {
+    id: {
+      autoIncrement: true,
+      primaryKey: true,
+      field:"id",
+      type: Sequelize.BIGINT
+    },
+    name: {
+      field:"name",
+      type: Sequelize.STRING
+    },
+    password:{
+      field: "password",
+      type: Sequelize.STRING
+    },
     createdAt: {
       field: "created_at",
       type: Sequelize.DATE
@@ -10,30 +24,43 @@ module.exports = function(sequelize, Sequelize) {
       field: "updated_at",
       type: Sequelize.DATE
     },
-    id: {
-      autoIncrement: true,
-      primaryKey: true,
-      type: Sequelize.INTEGER
-    },
-    name: {
-      type: Sequelize.STRING
-    },
+    
     email: {
-      type: Sequelize.STRING
-    },
-    phone: {
+      field: "email",
       type: Sequelize.STRING
     },
     encrypted_password: {
+      field: "encrypted_password",
       type: Sequelize.STRING
     },
+    reset_password_token: {
+      field:"reset_password_token",
+      type: Sequelize.STRING
+    },
+    reset_password_sent_at: {
+      field:"reset_password_sent_at",
+      type: Sequelize.DATE
+    },
+    remember_created_at: {
+      field:"remember_created_at",
+      type: Sequelize.DATE
+    },
+  
     academicTitleId: {
       field: "academic_title_id",
-      type: Sequelize.INTEGER
+      type: Sequelize.BIGINT
     },
     organizationId: {
       field: "organization_id",
-      type: Sequelize.INTEGER
+      type: Sequelize.BIGINT
+    },  
+    phone: {
+      field:"phone",
+      type: Sequelize.STRING
+    },
+    descriptions:{
+      field:"descriptions",
+      type: Sequelize.STRING
     }
   });
 
@@ -47,6 +74,10 @@ module.exports = function(sequelize, Sequelize) {
     User.belongsToMany(models.volume, { through: models.users_volume });
     //
     User.hasOne(models.section, { foreignKey: 'reviewer_id' });
+    User.hasMany(models.docs_log);
+    User.hasMany(models.section_draft);
+    User.hasMany(models.sections_log);
+    User.hasMany(models.documentation);
   };
 
   return User;

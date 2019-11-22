@@ -3,7 +3,7 @@ module.exports = function(sequelize, Sequelize) {
     "doc_type",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -13,6 +13,10 @@ module.exports = function(sequelize, Sequelize) {
     },
     { timestamps: false }
   );
+  DocType.associate = function (models) {
+    DocType.hasMany(models.documentation);    
+}
+
 
   return DocType;
 };

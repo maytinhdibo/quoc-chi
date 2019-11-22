@@ -1,5 +1,23 @@
 module.exports = function (sequelize, Sequelize) {
     const Chapter = sequelize.define("chapter", {
+        id: {
+            autoIncrement: true,
+            primaryKey: true,
+            type: Sequelize.BIGINT
+          },
+          name: {
+            type: Sequelize.STRING,
+        },
+        description: {
+            type: Sequelize.STRING,
+        },
+        introduction: {
+            type: Sequelize.STRING,
+        },
+        volumeId: {
+            field: 'volume_id',
+            type: Sequelize.BIGINT,
+        },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
@@ -8,19 +26,9 @@ module.exports = function (sequelize, Sequelize) {
             field: 'updated_at',
             type: Sequelize.DATE,
         },
-        volumeId: {
-            field: 'volume_id',
-            type: Sequelize.INTEGER,
-        },
-        name: {
-            type: Sequelize.STRING,
-        },
-        description: {
-            type: Sequelize.STRING,
-        },
-        introduction: {
-            type: Sequelize.STRING,
-        }
+     
+   
+     
     });
 
     Chapter.associate = function (models) {

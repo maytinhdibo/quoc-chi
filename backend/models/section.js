@@ -1,13 +1,6 @@
 module.exports = function(sequelize, Sequelize) {
   const Section = sequelize.define("section", {
-    createdAt: {
-      field: "created_at",
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      field: "updated_at",
-      type: Sequelize.DATE
-    },
+    
     name: {
       type: Sequelize.STRING
     },
@@ -19,17 +12,33 @@ module.exports = function(sequelize, Sequelize) {
     },
     chapterId: {
       field: "chapter_id",
-      type: Sequelize.STRING
+      type: Sequelize.BIGINT
     },
     reviewerId: {
       field: "reviewer_id",
-      type: Sequelize.INTEGER
+      type: Sequelize.BIGINT
+    },
+    createdAt: {
+      field: "created_at",
+      type: Sequelize.DATE
+    },
+    updatedAt: {
+      field: "updated_at",
+      type: Sequelize.DATE
+    },
+    versionId: {
+      field: "version_id",
+      type: Sequelize.BIGINT
+    },
+    sectionStateId:{
+      field: "section_state_id",
+      type: Sequelize.BIGINT
     }
   });
 
   Section.associate = function(models) {
     Section.belongsToMany(models.user, { through: models.sections_user });
-    Section.belongsTo(models.chapter);
+    Section.belongsTo(models.chapter, {foreignKey: "chapter_id"});
 
     Section.belongsToMany(models.documentation, {
       through: models.sections_docs_logs
@@ -40,7 +49,16 @@ module.exports = function(sequelize, Sequelize) {
       targetKey: "id",
       as: "reviewer"
     });
-  };
+    // Section.belongsToMany(models.keyword, {
+    //   through: models.keyword_section
+    // });
+    Section.belongsTo(models.section_state, {foreignKey: "section_state_id"});
+    Section.hasMany(models.sections_log);
+    Section.hasMany(models.section_draft);
+
+    //Section.belongsTo(models.section_draft, { foreignKey: "version_id"});
+
+    };
 
   return Section;
 };
