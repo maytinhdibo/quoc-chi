@@ -29,6 +29,7 @@ module.exports = function (sequelize, Sequelize) {
         Book.belongsToMany(models.documentation,{ through: models.books_doc});
 
         Book.hasMany(models.volume);
+        Book.hasMany(models.books_docs);
     };
 
     return Book;
