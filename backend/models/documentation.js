@@ -97,13 +97,30 @@ module.exports = function(sequelize, Sequelize) {
       allowNull: true,
       defaultValue: "0",
       field: "store_location"
-    }
+    },
+    docTypeId: {
+      type: Sequelize.BIGINT,
+      allowNull: true,
+      field: "doc_state_id"
+    },
   });
 
   Documentation.associate = function(models) {
     Documentation.belongsToMany(models.section, {
       through: models.sections_docs_logs
     });
+    Documentation.belongsToMany(models.book, {
+      through: models.books_doc
+    });
+    Documentation.belongsToMany(models.keyword, {
+      through: models.documentations_keyword
+    });
+    
+    Documentation.belongsTo(models.doc_state ,{ foreignKey: "doc_state_id" });
+    Documentation.belongsTo(models.doc_type,{ foreignKey: "doc_type,_id" });
+    Documentation.hasMany(models.docs_log);
+    Documentation.belongsTo(models.user, {foreignKey: "user_id"});
+    Documentation.belongsTo(models.user, {foreignKey: "approver_id"});
   };
 
   return Documentation;

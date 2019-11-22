@@ -1,6 +1,19 @@
 module.exports = function (sequelize, Sequelize) {
     //usercreate 
     const Title = sequelize.define("academic_title", {
+       
+          id: {
+            primaryKey: true,
+            field: 'id',
+            type: Sequelize.BIGINT,
+            
+          },
+        name: {
+            type: Sequelize.STRING,
+        },
+        fullname: {
+            type: Sequelize.STRING,
+        },
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
@@ -9,16 +22,11 @@ module.exports = function (sequelize, Sequelize) {
             field: 'updated_at',
             type: Sequelize.DATE,
           },
-        name: {
-            type: Sequelize.STRING,
-        },
-        fullname: {
-            type: Sequelize.STRING,
-        },
+     
     });
 
     Title.associate = function (models) {
-        Title.hasMany(models.user, {foreignKey: 'academic_title_id'});
+        Title.hasMany(models.user);
     };
 
     return Title;
