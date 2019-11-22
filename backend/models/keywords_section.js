@@ -9,10 +9,10 @@ module.exports = function(sequelize, Sequelize){
             type: Sequelize.BIGINT,          },
     },
     { timestamps: false });
-    keywordSection.associate = function(models) {
-        keywordSection.belongsTo(models.section,{foreignKey : "section_id"});
-        keywordSection.belongsTo(models.keyword,{ foreignKey: "keyword_id"});
-    };
+    // keywordSection.associate = function(models) {
+    //     keywordSection.belongsTo(models.section,{foreignKey : "section_id"});
+    //     keywordSection.belongsTo(models.keyword,{ foreignKey: "keyword_id"});
+    // };
 
     return keywordSection;
 }
