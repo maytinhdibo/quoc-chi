@@ -13,7 +13,7 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.BIGINT
           },
           resource_type: {
-            field : 'resource_tyoe',
+            field : 'resource_type',
             type: Sequelize.STRING
           },
           createdAt: {

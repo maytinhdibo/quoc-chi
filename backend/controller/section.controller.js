@@ -8,7 +8,7 @@ const newSection = async (req, res) => {
     let newsection = await db.section.create({
       name,
       description,
-      chapterId,
+      chapterId
     });
 
     res.json(response.success(newsection));
@@ -27,14 +27,14 @@ const publishSection = async (req, res) => {
 
     let section = await db.section.findOne({
       where: {
-        id: sectionid,
-      },
+        id: sectionid
+      }
     });
 
     let draft = await db.sequelize.query(
       "SELECT * FROM section_drafts WHERE id = " + draftid + " LIMIT 1",
       {
-        type: db.sequelize.QueryTypes.SELECT,
+        type: db.sequelize.QueryTypes.SELECT
       }
     );
 
@@ -54,7 +54,7 @@ const publishSection = async (req, res) => {
         draftid,
       {
         replacements: [req.tokenData.id, name, description, content, 1],
-        type: db.sequelize.QueryTypes.UPDATE,
+        type: db.sequelize.QueryTypes.UPDATE
       }
     );
 
@@ -62,7 +62,7 @@ const publishSection = async (req, res) => {
       await section.update({
         name,
         description,
-        content,
+        content
       });
     } else {
       throw new Error("Mục không tồn tại");
@@ -87,7 +87,7 @@ const getListDraft = async (req, res) => {
       ORDER BY sd.updated_at DESC
       `,
       {
-        type: db.sequelize.QueryTypes.SELECT,
+        type: db.sequelize.QueryTypes.SELECT
       }
     );
     drafts = drafts.map(object => {
@@ -98,8 +98,8 @@ const getListDraft = async (req, res) => {
         updated_at: object.updated_at,
         user: {
           id: object.user_id,
-          name: object.user_name,
-        },
+          name: object.user_name
+        }
       };
     });
 
@@ -116,8 +116,8 @@ const saveNewDraft = async (req, res) => {
 
     let section = await db.section.findOne({
       where: {
-        id: sectionid,
-      },
+        id: sectionid
+      }
     });
 
     if (section) {
@@ -131,9 +131,9 @@ const saveNewDraft = async (req, res) => {
             name,
             description,
             content,
-            0,
+            0
           ],
-          type: db.sequelize.QueryTypes.INSERT,
+          type: db.sequelize.QueryTypes.INSERT
         }
       );
 
@@ -143,6 +143,37 @@ const saveNewDraft = async (req, res) => {
     }
   } catch (e) {
     res.json(response.fail(e.message));
+  }
+};
+
+const getLastVersion = async sectionId => {
+  const defaultVal = {
+    id: sectionId,
+    content: "",
+    user_id: -1,
+    id: null
+  };
+  try {
+    var section = await db.section_draft.findAll({
+      where: {
+        section_id: sectionId,
+        // user_id: req.tokenData.id,
+        published: 1
+      },
+      limit: 1,
+      order: [["updated_at", "DESC"]],
+      attributes: ["name", "description", "content", "user_id", "id"]
+    });
+
+  
+    if (section) {
+      console.log(section[0].name);
+      return section[0];
+    } else {
+      return defaultVal;
+    }
+  } catch (e) {
+    return defaultVal;
   }
 };
 
@@ -156,15 +187,15 @@ const saveDraft = async (req, res) => {
 
     let section = await db.section.findOne({
       where: {
-        id: sectionid,
-      },
+        id: sectionid
+      }
     });
 
     if (section) {
       let draft = await db.sequelize.query(
         "SELECT * FROM section_drafts WHERE id = " + draftid + " LIMIT 1",
         {
-          type: db.sequelize.QueryTypes.SELECT,
+          type: db.sequelize.QueryTypes.SELECT
         }
       );
 
@@ -184,7 +215,7 @@ const saveDraft = async (req, res) => {
           draftid,
         {
           replacements: [req.tokenData.id, name, description, content, 0],
-          type: db.sequelize.QueryTypes.UPDATE,
+          type: db.sequelize.QueryTypes.UPDATE
         }
       );
     } else {
@@ -202,4 +233,5 @@ module.exports = {
   getListDraft,
   saveNewDraft,
   saveDraft,
+  getLastVersion
 };

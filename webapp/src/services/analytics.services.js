@@ -112,8 +112,8 @@ const getSections = chapterid => {
   });
 };
 
-const getSection = sectionId => {
-  const url = app.API_URL + `/analytics/section?id=` + sectionId;
+const getSection = (sectionId, version) => {
+  const url = app.API_URL + `/analytics/section?id=` + sectionId+"&draft="+version;
   const request = new Request(url, {
     method: "GET",
     headers: {

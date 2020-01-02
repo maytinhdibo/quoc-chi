@@ -185,6 +185,24 @@ p {
   box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
+.qc-badge {
+  border-radius: 4px;
+  background: #eee;
+  padding: 3px 5px;
+  font-size: 0.75em;
+  font-weight: 700;
+  cursor: pointer;
+}
+.qc-badge.warn {
+  background-color: #e66969;
+  color: #fff;
+}
+
+.qc-badge.success{
+  background-color: #57c753;
+  color: #fff;
+}
+
 .qc-card.user {
   .column:nth-child(1) {
     border-right: 1px solid #ebedf2;
@@ -672,53 +690,53 @@ p {
     padding: 6px 9px;
     border-radius: 3px;
     line-height: 1.25;
-    .id-badge{
+    .id-badge {
       display: inline-block;
       // border:1px solid #223;
       // background-color:#ddd;
-      color:#345;
+      color: #345;
       font-size: 0.75em;
       text-align: left;
       font-weight: 700;
-      padding:3px;
-      width:3rem;
+      padding: 3px;
+      width: 3rem;
     }
-    .name{
+    .name {
       font-weight: 700;
     }
-    .date{
+    .date {
       width: 95px;
-      font-size:0.85em;
+      font-size: 0.85em;
       text-align: center;
     }
-    .status{
+    .status {
       width: 120px;
       .status-btn {
         margin: 6px;
         padding: 6px;
         border: 1px solid #333;
         border-radius: 3px;
-        font-size:0.75em;
+        font-size: 0.75em;
         font-weight: 700;
         width: 95px;
         display: inline-block;
         text-align: center;
         cursor: pointer;
       }
-      .status-btn.published{
-        color:#007f48;
-        border-color:#007f48;
-        &:hover{
-          color:#fff;
-          background-color:#007f48;
+      .status-btn.published {
+        color: #007f48;
+        border-color: #007f48;
+        &:hover {
+          color: #fff;
+          background-color: #007f48;
         }
       }
-      .status-btn.draft{
-        color:#bb3939;
-        border-color:#bb3939;
-        &:hover{
-          color:#fff;
-          background-color:#bb3939;
+      .status-btn.draft {
+        color: #bb3939;
+        border-color: #bb3939;
+        &:hover {
+          color: #fff;
+          background-color: #bb3939;
         }
       }
     }
@@ -742,26 +760,26 @@ p {
   left: 0;
   right: 0;
   bottom: 0;
-  button{
+  button {
     outline: none !important;
   }
-  .menu-tool{
-    padding:6px 0;
+  .menu-tool {
+    padding: 6px 0;
     position: absolute;
-    top:40px;
+    top: 40px;
     right: 0;
     z-index: 99999;
     background: #fff;
     border: 1px solid #ccc;
     box-shadow: -6px 5px 9px 0px rgba(0, 0, 0, 0.2);
-    button{
+    button {
       display: block;
       width: 100%;
       padding: 8px 24px;
-      padding-left:18px;
+      padding-left: 18px;
       text-align: left;
-      border:none;
-      &:hover{
+      border: none;
+      &:hover {
         background: rgba(0, 0, 0, 0.08);
       }
     }

@@ -3,6 +3,7 @@ module.exports = function(sequelize,Sequelize){
         id: {
             primaryKey: true,
             field: 'id',
+            autoIncrement: true,
             type: Sequelize.BIGINT,
             
           },

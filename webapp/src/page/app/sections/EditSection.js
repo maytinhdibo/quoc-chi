@@ -7,7 +7,7 @@ import {
   ModalBody,
   ModalHeader,
   Row,
-  Col,
+  Col
 } from "reactstrap";
 
 import { Link as RouteLink } from "react-router-dom";
@@ -23,7 +23,7 @@ import {
   faClock,
   faSave,
   faBookMedical,
-  faBars,
+  faBars
 } from "@fortawesome/free-solid-svg-icons";
 
 import CKEditor from "@ckeditor/ckeditor5-react";
@@ -78,7 +78,7 @@ const editorConfiguration = {
     ImageStyle,
     ImageToolbar,
     ImageUpload,
-    Base64UploadAdapter,
+    Base64UploadAdapter
   ],
   toolbar: [
     "Heading",
@@ -100,7 +100,7 @@ const editorConfiguration = {
     "Undo",
     "Redo",
     "Paragraph",
-    "Copy",
+    "Copy"
   ],
   heading: {
     options: [
@@ -109,21 +109,21 @@ const editorConfiguration = {
         model: "heading1",
         view: "h1",
         title: "Heading 1",
-        class: "ck-heading_heading1",
+        class: "ck-heading_heading1"
       },
       {
         model: "heading2",
         view: "h2",
         title: "Heading 2",
-        class: "ck-heading_heading2",
-      },
-    ],
+        class: "ck-heading_heading2"
+      }
+    ]
   },
   table: {
-    contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+    contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"]
   },
   fontSize: {
-    options: [9, 11, 13, "default", 17, 19, 21],
+    options: [9, 11, 13, "default", 17, 19, 21]
   },
   image: {
     toolbar: [
@@ -132,10 +132,10 @@ const editorConfiguration = {
       "imageStyle:alignLeft",
       "imageStyle:full",
       "imageStyle:side",
-      "imageStyle:alignRight",
+      "imageStyle:alignRight"
     ],
-    styles: ["full", "alignLeft", "alignRight"],
-  },
+    styles: ["full", "alignLeft", "alignRight"]
+  }
 };
 
 class EditSection extends React.Component {
@@ -143,31 +143,47 @@ class EditSection extends React.Component {
     content: "",
     description: "",
     name: "",
+    user_id: null,
     modalPreview: false,
     modalInfo: false,
     modalListDraft: false,
     fullScreen: true,
     listVersion: [],
     menuTool: false,
+    version: null
   };
   handleSection = actorValue => {
     this.setState({ actorValue });
   };
 
-  componentDidMount() {
+  loadSection = () => {
+    const version = queryString.parse(this.props.location.search).version;
     const { id } = this.props.match.params;
-    analyticsAPI.getSection(id).then(object => {
+    analyticsAPI.getSection(id, version).then(object => {
       if (object.success) {
-        let { name, description, content } = object.data.section;
+        let { name, description, content, user_id, id } = object.data.section;
         this.setState({
           name,
           description,
           content: content ? content : "",
+          user_id,
+          version: object.data.section.id && 0
         });
       } else {
         alertText(object.reason);
       }
     });
+  };
+
+  componentDidMount() {
+    this.loadSection();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params != this.props.match.params) {
+      this.loadSection();
+      console.log("load");
+    }
   }
 
   toggleListDraft = () => {
@@ -185,7 +201,11 @@ class EditSection extends React.Component {
     let { description, name, content } = this.state;
     let version = queryString.parse(this.props.location.search).version;
     sectionAPI
-      .publishSection({ description, name, content }, this.props.match.params.id, version)
+      .publishSection(
+        { description, name, content },
+        this.props.match.params.id,
+        version
+      )
       .then(object => {
         if (object.success) {
           alertText("Sửa đổi thành công.");
@@ -216,7 +236,7 @@ class EditSection extends React.Component {
 
   saveDraft = () => {
     let { description, name, content } = this.state;
-    let version = queryString.parse(this.props.location.search).version;
+    let version = queryString.parse(this.props.location.search).version && this.state.version;
     sectionAPI
       .saveDraft(
         { description, name, content },
@@ -260,7 +280,7 @@ class EditSection extends React.Component {
             <ModalBody>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: this.state.content,
+                  __html: this.state.content
                 }}
               ></div>
             </ModalBody>
@@ -369,7 +389,24 @@ class EditSection extends React.Component {
                 />
               </button>
             </div>
-            <span className="qc-title">{this.state.name}</span>
+            <span className="qc-title">
+              {this.state.name}
+              {this.state.user_id != localStorage.id ? (
+                <span
+                  style={{ marginLeft: "6px" }}
+                  title="Bạn đang sửa trên nội dung của người khác, bạn chỉ có thể xem hoặc lưu thành phiên bản mới."
+                  className="qc-badge warn"
+                >
+                  CHỈ ĐỌC
+                </span>
+              ) : null}
+              {this.state.user_id==-1? <span
+                  style={{ marginLeft: "6px" }}
+                  className="qc-badge success"
+                >
+                  PHIÊN BẢN MỚI
+                </span>:null}
+            </span>
             <div className="qc-gr-btn">
               <button onClick={this.previewSection} class="bar-btn">
                 <span className="icon">
@@ -390,7 +427,7 @@ class EditSection extends React.Component {
 
             <div
               style={{
-                display: this.state.menuTool ? "block" : "none",
+                display: this.state.menuTool ? "block" : "none"
               }}
               className="menu-tool"
             >
@@ -412,12 +449,14 @@ class EditSection extends React.Component {
                 Thông tin
               </button>
 
-              <button onClick={this.saveDraft} class="bar-btn">
-                <span className="icon">
-                  <FontAwesomeIcon icon={faSave} />
-                </span>
-                Lưu nháp
-              </button>
+              {this.state.user_id == localStorage.id ? (
+                <button onClick={this.saveDraft} class="bar-btn">
+                  <span className="icon">
+                    <FontAwesomeIcon icon={faSave} />
+                  </span>
+                  Lưu nháp
+                </button>
+              ) : null}
               <button onClick={this.saveNewDraft} class="bar-btn">
                 <span className="icon">
                   <FontAwesomeIcon icon={faBookMedical} />
