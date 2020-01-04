@@ -4,7 +4,8 @@ module.exports = function(sequelize,Sequelize){
             primaryKey: true,
             field: 'id',
             type: Sequelize.BIGINT,
-            
+            allowNull: false,
+            autoIncrement: true,
           },
           docsLogTypeId:{
               field: "docs_log_type_id",
@@ -15,7 +16,7 @@ module.exports = function(sequelize,Sequelize){
             type: Sequelize.BIGINT,
           },
           documentationId: {
-            field: 'doccumentation_id',
+            field: 'documentation_id',
             type: Sequelize.BIGINT
           },
         
@@ -32,7 +33,7 @@ module.exports = function(sequelize,Sequelize){
 
     });
      DocsLog.associate = function (models) {
-        DocsLog.belongsTo(models.documentation,{foreignKey :"doccumentation_id"}); 
+        DocsLog.belongsTo(models.documentation,{foreignKey :"documentation_id"}); 
         DocsLog.belongsTo(models.docs_log_type,{foreignKey :"docs_log_type_id"});
         DocsLog.belongsTo(models.user,{foreignKey :"user_id"});    
     

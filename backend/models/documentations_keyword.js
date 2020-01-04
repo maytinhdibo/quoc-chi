@@ -2,11 +2,13 @@ module.exports = function(sequelize, Sequelize){
     const DocKey= sequelize.define("documentations_keyword",{
         keywordId:{
             field:"keyword_id",
-            type: Sequelize.BIGINT
+            type: Sequelize.BIGINT,
+            allowNull: false,
         },
         documentationId: {
             field: 'doccumentation_id',
-            type: Sequelize.BIGINT
+            type: Sequelize.BIGINT,
+            allowNull: false,
           },
     },
     { timestamps: false });

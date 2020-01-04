@@ -14,20 +14,23 @@ module.exports = function(sequelize, Sequelize) {
     },
     password:{
       field: "password",
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     createdAt: {
       field: "created_at",
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false,
     },
     updatedAt: {
       field: "updated_at",
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false,
     },
     
     email: {
       field: "email",
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     encrypted_password: {
       field: "encrypted_password",
