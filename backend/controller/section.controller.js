@@ -146,14 +146,56 @@ const saveNewDraft = async (req, res) => {
   }
 };
 
+const getSection = async (req, res) => {
+  try {
+    let sectionId = req.query.id;
+    let version = req.query.draft;
+
+    if (version != "undefined") {
+      var section = await db.section_draft.findOne({
+        where: {
+          section_id: sectionId,
+          id: version
+        },
+
+        attributes: ["name", "description", "content", "user_id", "id"]
+      });
+      if (!section) throw new Error("Phiên bản không tồn tại");
+      res.json(response.success({ section }));
+    } else {
+      //tìm version cuối cùng của user
+      var section = await db.section_draft.findAll({
+        where: {
+          section_id: sectionId,
+          user_id: req.tokenData.id
+        },
+        limit: 1,
+        order: [["updated_at", "DESC"]],
+        attributes: ["name", "description", "content", "user_id", "id"]
+      });
+      if (section.length != 0) {
+        res.json(response.success({ section: section[0] }));
+      } else {
+        //tìm version mới nhất được xuất bản
+        console.log("search");
+        let version = await getLastVersion(sectionId);
+        res.json(response.success({ section: version }));
+      }
+    }
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+};
+
 const getLastVersion = async sectionId => {
-  const defaultVal = {
+  var defaultVal = {
+    name: "",
     id: sectionId,
     content: "",
-    user_id: -1,
-    id: null
+    user_id: -1
   };
   try {
+
     var section = await db.section_draft.findAll({
       where: {
         section_id: sectionId,
@@ -165,14 +207,22 @@ const getLastVersion = async sectionId => {
       attributes: ["name", "description", "content", "user_id", "id"]
     });
 
-  
-    if (section) {
+    if (section.length>0) {
       console.log(section[0].name);
       return section[0];
     } else {
+      let section = await db.section.findOne({
+        where: {
+          id: sectionId
+        },
+        attributes: ["name"]
+      });
+      defaultVal.name = section.name;
+      console.log(section);
       return defaultVal;
     }
   } catch (e) {
+    console.log(e.message);
     return defaultVal;
   }
 };
@@ -233,5 +283,6 @@ module.exports = {
   getListDraft,
   saveNewDraft,
   saveDraft,
-  getLastVersion
+  getLastVersion,
+  getSection
 };

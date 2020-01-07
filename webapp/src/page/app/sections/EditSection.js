@@ -159,7 +159,7 @@ class EditSection extends React.Component {
   loadSection = () => {
     const version = queryString.parse(this.props.location.search).version;
     const { id } = this.props.match.params;
-    analyticsAPI.getSection(id, version).then(object => {
+    analyticsAPI.getSectionFull(id, version).then(object => {
       if (object.success) {
         let { name, description, content, user_id, id } = object.data.section;
         this.setState({
@@ -391,7 +391,7 @@ class EditSection extends React.Component {
             </div>
             <span className="qc-title">
               {this.state.name}
-              {this.state.user_id != localStorage.id ? (
+              {this.state.user_id != localStorage.id && this.state.user_id!=-1? (
                 <span
                   style={{ marginLeft: "6px" }}
                   title="Bạn đang sửa trên nội dung của người khác, bạn chỉ có thể xem hoặc lưu thành phiên bản mới."
