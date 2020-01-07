@@ -118,7 +118,7 @@ module.exports = function(sequelize, Sequelize) {
     });
     
     Documentation.belongsTo(models.doc_state ,{ foreignKey: "doc_state_id" });
-    Documentation.belongsTo(models.doc_type,{ foreignKey: "doc_type_id" });
+    // Documentation.belongsTo(models.doc_type,{ foreignKey: "doc_type_id" });
     Documentation.hasMany(models.docs_log);
     Documentation.belongsTo(models.user, {foreignKey: "user_id"});
     Documentation.belongsTo(models.user, {foreignKey: "approver_id"});
