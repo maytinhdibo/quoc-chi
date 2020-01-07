@@ -306,11 +306,30 @@ const getInfo = async (req, res) => {
       where: {
         id: id
       },
-      include: [{ all: true }]
+      include: [{ model: db.academic_title},{ model: db.organization}]
     });
+
+
     if (!user) {
       throw new Error("Tài khoản không tồn tại!");
     } else {
+
+      //change to check role
+      // let role = await users_role.findOne({
+      //   where:{
+      //     userId: id,
+      //     roleId: 1
+      //   }
+      // })
+      // console.log("ahoho");
+      // console.log(role);
+      // console.log("ahoho");
+
+      // if(role){
+      //   console.log("ahihi");
+      //   res.send("sfd");
+      // }
+
       let book_roles = await db.books_user.findAll({
         where: {
           userId: id
