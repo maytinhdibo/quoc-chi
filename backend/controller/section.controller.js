@@ -218,11 +218,9 @@ const getLastVersion = async sectionId => {
         attributes: ["name"]
       });
       defaultVal.name = section.name;
-      console.log(section);
       return defaultVal;
     }
   } catch (e) {
-    console.log(e.message);
     return defaultVal;
   }
 };

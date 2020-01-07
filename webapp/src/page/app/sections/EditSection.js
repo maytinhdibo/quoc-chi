@@ -167,7 +167,9 @@ class EditSection extends React.Component {
           description,
           content: content ? content : "",
           user_id,
-          version: object.data.section.id && 0
+          version: object.data.section.id && 0,
+          modalListDraft: false,
+          menuTool: false
         });
       } else {
         alertText(object.reason);
@@ -236,7 +238,9 @@ class EditSection extends React.Component {
 
   saveDraft = () => {
     let { description, name, content } = this.state;
-    let version = queryString.parse(this.props.location.search).version && this.state.version;
+    let version =
+      queryString.parse(this.props.location.search).version &&
+      this.state.version;
     sectionAPI
       .saveDraft(
         { description, name, content },
@@ -391,7 +395,8 @@ class EditSection extends React.Component {
             </div>
             <span className="qc-title">
               {this.state.name}
-              {this.state.user_id != localStorage.id && this.state.user_id!=-1? (
+              {this.state.user_id != localStorage.id &&
+              this.state.user_id != -1 ? (
                 <span
                   style={{ marginLeft: "6px" }}
                   title="Bạn đang sửa trên nội dung của người khác, bạn chỉ có thể xem hoặc lưu thành phiên bản mới."
@@ -400,12 +405,14 @@ class EditSection extends React.Component {
                   CHỈ ĐỌC
                 </span>
               ) : null}
-              {this.state.user_id==-1? <span
+              {this.state.user_id == -1 ? (
+                <span
                   style={{ marginLeft: "6px" }}
                   className="qc-badge success"
                 >
                   PHIÊN BẢN MỚI
-                </span>:null}
+                </span>
+              ) : null}
             </span>
             <div className="qc-gr-btn">
               <button onClick={this.previewSection} class="bar-btn">
