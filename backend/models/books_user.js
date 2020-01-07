@@ -3,14 +3,17 @@ module.exports = function (sequelize, Sequelize) {
     bookId: {
       field: 'book_id',
       type: Sequelize.BIGINT,
+      allowNull: false,
     },
     userId: {
       field: 'user_id',
       type: Sequelize.BIGINT,
+      allowNull: false,
     },
     bookRoleId: {
       field: 'book_role_id',
-      type: Sequelize.BIGINT
+      type: Sequelize.BIGINT,
+
     }
   },
     { timestamps: false }

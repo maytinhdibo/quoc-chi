@@ -6,7 +6,8 @@ module.exports = function(sequelize, Sequelize) {
         type: Sequelize.BIGINT,
         allowNull: false,
         primaryKey: true,
-        field: "id"
+        field: "id",
+        autoIncrement: true,
       },
       sectionId: {
         type: Sequelize.BIGINT,

@@ -6,16 +6,16 @@ module.exports = function (sequelize, Sequelize) {
             type: Sequelize.BIGINT
           },
           name: {
-            type: Sequelize.STRING,
+            type: Sequelize.STRING(4096),
         },
         description: {
-            type: Sequelize.STRING,
+            type: Sequelize.TEXT                        ,
         },
         introduction: {
-            type: Sequelize.STRING,
+            type: Sequelize.TEXT                        ,
         },
         cover: {
-            type: Sequelize.STRING,
+            type: Sequelize.TEXT                        ,
         },
         edit_rules:{
             field:"edit_rules",
@@ -29,10 +29,12 @@ module.exports = function (sequelize, Sequelize) {
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
+            allowNull: false,
           },
           updatedAt: {
             field: 'updated_at',
             type: Sequelize.DATE,
+            allowNull: false,
           },
         
       

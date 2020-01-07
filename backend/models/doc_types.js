@@ -3,7 +3,7 @@ module.exports = function(sequelize, Sequelize) {
     "doc_type",
     {
       id: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT(11),
         autoIncrement: true,
         primaryKey: true,
       },

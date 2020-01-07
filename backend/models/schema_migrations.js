@@ -5,6 +5,7 @@ module.exports = function(sequelize, Sequelize){
             field: "version",
             type: Sequelize.STRING,
         },
-    });
+    },
+    {timestamps: false});
     return schemaMigration;
 }

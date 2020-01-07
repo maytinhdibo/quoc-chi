@@ -3,10 +3,12 @@ module.exports = function (sequelize, Sequelize) {
     sectionId: {
       field: 'section_id',
       type: Sequelize.BIGINT,
+      allowNull: false,
     },
     userId: {
       field: 'user_id',
       type: Sequelize.BIGINT,
+      allowNull: false,
     }
   },
     { timestamps: false }

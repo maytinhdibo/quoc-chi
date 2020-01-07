@@ -5,11 +5,11 @@ module.exports = function (sequelize, Sequelize) {
         primaryKey: true,
         field: 'id',
         type: Sequelize.BIGINT,
-        
+        autoIncrement: true,
       },
       name: {
             field: 'name',
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
           },
          
           createdAt: {

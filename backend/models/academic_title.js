@@ -6,7 +6,8 @@ module.exports = function (sequelize, Sequelize) {
             primaryKey: true,
             field: 'id',
             type: Sequelize.BIGINT,
-            
+            allowNull: false,
+            autoIncrement: true,
           },
         name: {
             type: Sequelize.STRING,
@@ -17,10 +18,12 @@ module.exports = function (sequelize, Sequelize) {
         createdAt: {
             field: 'created_at',
             type: Sequelize.DATE,
+            allowNull: false
           },
           updatedAt: {
             field: 'updated_at',
             type: Sequelize.DATE,
+            allowNull: false
           },
      
     });
