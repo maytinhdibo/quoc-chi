@@ -13,16 +13,31 @@ const checkDuplicate = async (req, res) => {
       filter = "WHERE b.id = " + book;
     }
 
+    // Loại bỏ duplicate trong cùng tập
+    // const filterIn =
+    //   `
+    //   SELECT min(s.id) FROM sections s
+    //   LEFT JOIN chapters c ON s.chapter_id=c.id
+    //   LEFT JOIN volumes v ON c.volume_id=v.id
+    //   LEFT JOIN books b ON v.book_id=b.id
+    //   ` +
+    //   filter +
+    //   `
+    //  GROUP BY s.name
+    // `;
+
     const filterIn =
       `
-      SELECT min(s.id) FROM sections s
-      LEFT JOIN chapters c ON s.chapter_id=c.id
-      LEFT JOIN volumes v ON c.volume_id=v.id
-      LEFT JOIN books b ON v.book_id=b.id
-      ` +
-      filter +
-      ` GROUP BY s.name
-    `;
+    SELECT s.id FROM sections s
+    LEFT JOIN chapters c ON s.chapter_id=c.id
+    LEFT JOIN volumes v ON c.volume_id=v.id
+    LEFT JOIN books b ON v.book_id=b.id
+    ` +
+      filter
+      //   +
+      //   `
+      //  GROUP BY s.name   `
+      ;
 
     if (filter.length > 1) {
       filter = [];
@@ -32,6 +47,8 @@ const checkDuplicate = async (req, res) => {
     FROM sections s
     GROUP BY s.name
     HAVING count > 1`;
+
+
     let sections = await db.sequelize.query(
       `SELECT s.id as section_id, s.name as section_name, 
       c.id as chapter_id, c.name as chapter_name, 
@@ -43,12 +60,14 @@ const checkDuplicate = async (req, res) => {
       LEFT JOIN volumes v ON c.volume_id=v.id
       LEFT JOIN books b ON v.book_id=b.id
       INNER JOIN (` +
-        countQuery +
-        `) as T1
-      ON s.name =  T1.section_name 
+      countQuery +
+      `) as T1
+      ON s.name =  T1.section_name
       WHERE s.id IN (` +
-        filterIn +
-        `)`,
+      filterIn +
+      `)
+        ORDER BY s.name ASC
+        `,
       {
         type: db.sequelize.QueryTypes.SELECT
       }
@@ -72,16 +91,16 @@ const listDuplicate = async (req, res) => {
       LEFT JOIN volumes v ON c.volume_id=v.id
       LEFT JOIN books b ON v.book_id=b.id
       ` +
-        `WHERE s.name=(SELECT name FROM sections WHERE id = ` +
-        id +
-        ` LIMIT 1) AND s.id <> ` +
-        id,
+      `WHERE s.name=(SELECT name FROM sections WHERE id = ` +
+      id +
+      ` LIMIT 1) AND s.id <> ` +
+      id,
       {
         type: db.sequelize.QueryTypes.SELECT
       }
     );
     res.json(response.success(sections));
-  } catch (e) {}
+  } catch (e) { }
 };
 
 module.exports = {
