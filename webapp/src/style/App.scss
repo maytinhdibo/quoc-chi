@@ -194,6 +194,11 @@ p {
   cursor: pointer;
 }
 .qc-badge.warn {
+  background-color: #ffee24;
+    color: #345;
+}
+
+.qc-badge.danger {
   background-color: #e66969;
   color: #fff;
 }
@@ -828,7 +833,7 @@ p {
   .ck-editor__main {
     padding: 22px 16px;
     z-index: -1;
-    height: calc(100vh - 78px);
+    height: calc(100vh - 119px);
     overflow: auto;
     .ck-content.ck-editor__editable {
       box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.1);

@@ -7,14 +7,14 @@ import {
   DropdownToggle,
   DropdownMenu,
   Nav,
-  Row,
+  Row
 } from "reactstrap";
 import language from "../../config/language";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faSearch,
-  faUserCircle,
+  faUserCircle
 } from "@fortawesome/free-solid-svg-icons";
 import NavGroup from "../../components/NavGroup";
 import Analytic from "./Analytic";
@@ -539,10 +539,11 @@ class DashBoard extends React.Component {
           }
         >
           <div className="page">
-            <div className="qc-sidebar-header">
+            {/* <div className="qc-sidebar-header">
               <FontAwesomeIcon className="user-avatar" icon={faUserCircle} />
               {localStorage.name}
-            </div>
+            </div> */}
+            <br />
             <NavGroup role={this.state.role} />
           </div>
         </div>
@@ -597,7 +598,7 @@ class DashBoard extends React.Component {
                     <Link to={"/dashboard/user/" + localStorage.id}>
                       <li>Tài khoản</li>
                     </Link>
-                    <li onClick={()=>this.signout(false)}>Đăng xuất</li>
+                    <li onClick={() => this.signout(false)}>Đăng xuất</li>
                   </ul>
                 </DropdownMenu>
               </UncontrolledDropdown>

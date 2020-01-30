@@ -150,7 +150,9 @@ class EditSection extends React.Component {
     fullScreen: true,
     listVersion: [],
     menuTool: false,
-    version: null
+    version: null,
+    modalPublish: false,
+    modalSave: false
   };
   handleSection = actorValue => {
     this.setState({ actorValue });
@@ -211,6 +213,7 @@ class EditSection extends React.Component {
       .then(object => {
         if (object.success) {
           alertText("Sửa đổi thành công.");
+          this.setState({ modalPublish: false });
         } else {
           alertText(object.reason);
         }
@@ -328,8 +331,8 @@ class EditSection extends React.Component {
                           Đã xuất bản
                         </span>
                       ) : (
-                        <span className="status-btn draft">Bản lưu nháp</span>
-                      )}
+                          <span className="status-btn draft">Bản lưu nháp</span>
+                        )}
                     </div>
                     <div className="date">
                       {moment(data.updated_at).format("h:mm:ss DD/MM/YYYY")}
@@ -380,6 +383,99 @@ class EditSection extends React.Component {
             </ModalBody>
           </Modal>
 
+
+
+          <Modal
+            toggle={() => {
+              this.setState({ modalPublish: !this.state.modalPublish });
+            }}
+            size="lg"
+            isOpen={this.state.modalPublish}
+          >
+            <ModalHeader
+              toggle={() => {
+                this.setState({ modalPublish: !this.state.modalPublish });
+              }}
+            >
+              Thông tin xuất bản
+            </ModalHeader>
+            <ModalBody>
+              <FormGroup>
+                <Label for="exampleEmail">Tên mục</Label>
+                <Input
+                  value={this.state.name}
+                  onChange={evt => this.setState({ name: evt.target.value })}
+                  type="text"
+                  placeholder="Nhập tên mục mới"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Giới thiệu</Label>
+                <Input
+                  value={this.state.description}
+                  onChange={evt =>
+                    this.setState({ description: evt.target.value })
+                  }
+                  style={{ height: "150px" }}
+                  type="textarea"
+                  name="text"
+                />
+              </FormGroup>
+
+              <span class="qc-badge warn"><sup><b>*</b> </sup>Vui lòng xác nhận các thông tin về mục trước khi xuất bản</span>
+              <div className="qc-align-right qc-content">
+                <button onClick={this.publishSection} class="qc-btn">
+                  <span className="icon"><FontAwesomeIcon icon={faCheck} /></span>
+                  Xuất bản
+                    </button>
+              </div>
+            </ModalBody>
+          </Modal>
+
+
+          <Modal
+            toggle={() => {
+              this.setState({ modalSave: !this.state.modalSave });
+            }}
+            size="lg"
+            isOpen={this.state.modalSave}
+          >
+            <ModalHeader
+              toggle={() => {
+                this.setState({ modalSave: !this.state.modalSave });
+              }}
+            >
+              Thông tin bản lưu
+            </ModalHeader>
+            <ModalBody>
+
+              <FormGroup>
+                <Input
+                  value={this.state.description}
+                  onChange={evt =>
+                    this.setState({ description: evt.target.value })
+                  }
+                  style={{ height: "150px" }}
+                  type="textarea"
+                  name="text"
+                  placeholder="Nhập mô tả cho bản lưu này"
+                />
+              </FormGroup>
+              <sup><i>* Bạn cần chú thích những nội dung sửa đổi trong phần này</i></sup>
+
+              <div className="qc-align-right qc-content">
+                <button onClick={this.publishSection} class="qc-btn">
+                  <span className="icon"><FontAwesomeIcon icon={faCheck} /></span>
+                  Lưu nháp
+                    </button>
+              </div>
+            </ModalBody>
+          </Modal>
+
+
+
+
           <div className="qc-header">
             <div
               onClick={() => {
@@ -396,15 +492,15 @@ class EditSection extends React.Component {
             <span className="qc-title">
               {this.state.name}
               {this.state.user_id != localStorage.id &&
-              this.state.user_id != -1 ? (
-                <span
-                  style={{ marginLeft: "6px" }}
-                  title="Bạn đang sửa trên nội dung của người khác, bạn chỉ có thể xem hoặc lưu thành phiên bản mới."
-                  className="qc-badge warn"
-                >
-                  CHỈ ĐỌC
+                this.state.user_id != -1 ? (
+                  <span
+                    style={{ marginLeft: "6px" }}
+                    title="Bạn đang sửa trên nội dung của người khác, bạn chỉ có thể xem hoặc lưu thành phiên bản mới."
+                    className="qc-badge danger"
+                  >
+                    CHỈ ĐỌC
                 </span>
-              ) : null}
+                ) : null}
               {this.state.user_id == -1 ? (
                 <span
                   style={{ marginLeft: "6px" }}
@@ -422,13 +518,14 @@ class EditSection extends React.Component {
                 Xem trước
               </button>
               <button
-                onClick={() => {
-                  this.setState({ menuTool: !this.state.menuTool });
-                }}
+                // onClick={() => {
+                //   this.setState({ menuTool: !this.state.menuTool });
+                // }}
+                onClick={this.toggleListDraft}
                 style={{ width: "40px" }}
                 class="bar-btn"
               >
-                <FontAwesomeIcon icon={faBars} />
+                <FontAwesomeIcon icon={faClock} />
               </button>
             </div>
 
@@ -437,45 +534,9 @@ class EditSection extends React.Component {
                 display: this.state.menuTool ? "block" : "none"
               }}
               className="menu-tool"
+              onClick={() => { this.setState({ menuTool: false }) }}
             >
-              <button onClick={this.toggleListDraft} class="bar-btn">
-                <span className="icon">
-                  <FontAwesomeIcon icon={faClock} />
-                </span>
-                Lịch sử phiên bản
-              </button>
-              <button
-                onClick={() => {
-                  this.setState({ modalInfo: !this.state.modalInfo });
-                }}
-                class="bar-btn"
-              >
-                <span className="icon">
-                  <FontAwesomeIcon icon={faEdit} />
-                </span>
-                Thông tin
-              </button>
-
-              {this.state.user_id == localStorage.id ? (
-                <button onClick={this.saveDraft} class="bar-btn">
-                  <span className="icon">
-                    <FontAwesomeIcon icon={faSave} />
-                  </span>
-                  Lưu nháp
-                </button>
-              ) : null}
-              <button onClick={this.saveNewDraft} class="bar-btn">
-                <span className="icon">
-                  <FontAwesomeIcon icon={faBookMedical} />
-                </span>
-                Lưu bản nháp mới
-              </button>
-              <button onClick={this.publishSection} class="bar-btn">
-                <span className="icon">
-                  <FontAwesomeIcon icon={faCheck} />
-                </span>
-                Xuất bản
-              </button>
+              hbkjnl
             </div>
           </div>
           <CKEditor
@@ -497,6 +558,49 @@ class EditSection extends React.Component {
               console.log("Focus.", editor);
             }}
           />
+
+          <div style={{
+            borderTop: "1px solid #eee",
+            background: "#fff",
+            textAlign: "right"
+          }} className="qc-header">
+            <div style={{
+              width: "100%"
+            }} className=" qc-gr-btn">
+
+              <button
+                onClick={() => {
+                  this.setState({ modalInfo: !this.state.modalInfo });
+                }}
+                class="bar-btn"
+              >
+                <span className="icon">
+                  <FontAwesomeIcon icon={faEdit} />
+                </span>
+                Thông tin
+              </button>
+
+              <button onClick={() => this.setState({ modalSave: true })} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faSave} />
+                </span>
+                Lưu nháp
+                </button>
+
+              {/* <button onClick={this.saveNewDraft} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faBookMedical} />
+                </span>
+                Lưu bản nháp mới
+              </button> */}
+              <button onClick={() => this.setState({ modalPublish: true })} class="bar-btn">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+                Xuất bản
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -234,9 +234,9 @@ class CheckDuplicate extends React.Component {
           <div className="qc-content">
             <Row>
               <Col md="6">
-                <Label>Quyển</Label>
+                <Label>Tập</Label>
                 <Select
-                  placeholder={"Chọn quyển..."}
+                  placeholder={"Chọn tập..."}
                   styles={inputStyle}
                   value={this.state.valueBook}
                   onChange={this.handleBook}
@@ -244,9 +244,9 @@ class CheckDuplicate extends React.Component {
                 />
               </Col>
               <Col md="6">
-                <Label>Tập</Label>
+                <Label>Quyển</Label>
                 <Select
-                  placeholder={"Chọn tập..."}
+                  placeholder={"Chọn quyển..."}
                   styles={inputStyle}
                   value={this.state.valueVolume}
                   onChange={this.handleVolume}
