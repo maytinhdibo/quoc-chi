@@ -465,15 +465,13 @@ class EditSection extends React.Component {
               <sup><i>* Bạn cần chú thích những nội dung sửa đổi trong phần này</i></sup>
 
               <div className="qc-align-right qc-content">
-                <button onClick={this.publishSection} class="qc-btn">
+                <button onClick={this.saveDraft} class="qc-btn">
                   <span className="icon"><FontAwesomeIcon icon={faCheck} /></span>
                   Lưu nháp
                     </button>
               </div>
             </ModalBody>
           </Modal>
-
-
 
 
           <div className="qc-header">

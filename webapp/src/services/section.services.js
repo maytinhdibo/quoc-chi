@@ -16,7 +16,7 @@ const newSection = (data, chapterid) => {
 };
 
 const publishSection = (data, id, draftid) => {
-  const url = app.API_URL + `/section/publish?id=` + id + "&version=" + draftid;
+  const url = app.API_URL + `/section/publish?id=` + id + (draftid ? "&version=" + draftid : "");
   const request = new Request(url, {
     method: "POST",
     headers: {
@@ -45,23 +45,23 @@ const getListDraft = id => {
 };
 
 const saveNewDraft = (data, id) => {
-  console.log("ahihi");
-  const url = app.API_URL + `/section/draft/new?id=` + id;
-  const request = new Request(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      token: localStorage.token,
-    },
-    body: JSON.stringify(data),
-  });
-  return fetch(request).then(response => {
-    return response.json();
-  });
+  // console.log("ahihi");
+  // const url = app.API_URL + `/section/draft/new?id=` + id;
+  // const request = new Request(url, {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     token: localStorage.token,
+  //   },
+  //   body: JSON.stringify(data),
+  // });
+  // return fetch(request).then(response => {
+  //   return response.json();
+  // });
 };
 
 const saveDraft = (data, id, draft) => {
-  const url = app.API_URL + `/section/draft/edit?id=` + id + `&draft=` + draft;
+  const url = app.API_URL + `/section/draft/edit?id=` + id;
   const request = new Request(url, {
     method: "POST",
     headers: {
