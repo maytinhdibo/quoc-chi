@@ -195,7 +195,7 @@ p {
 }
 .qc-badge.warn {
   background-color: #ffee24;
-    color: #345;
+  color: #345;
 }
 
 .qc-badge.danger {
@@ -203,7 +203,7 @@ p {
   color: #fff;
 }
 
-.qc-badge.success{
+.qc-badge.success {
   background-color: #57c753;
   color: #fff;
 }
@@ -714,6 +714,13 @@ p {
       font-size: 0.85em;
       text-align: center;
     }
+    ul {
+      list-style-position: inside;
+      font-size: 0.85em;
+      li {
+        margin: 0.25em 0;
+      }
+    }
     .status {
       width: 120px;
       .status-btn {
@@ -748,7 +755,8 @@ p {
     .name {
       display: block;
     }
-    .editor-name {
+    .expand-commit{
+      cursor: pointer;
       font-size: 0.75em;
     }
   }
@@ -765,6 +773,38 @@ p {
   left: 0;
   right: 0;
   bottom: 0;
+  .popup-create-version {
+    background-color: #33a85a;
+    // background-image: linear-gradient(to bottom, #43e97b 0%, #269b85 100%);
+    color: #fff;
+    font-size: 15px;
+    position: absolute;
+    bottom: 65px;
+    right: 40px;
+    z-index: 1000;
+    width: 250px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 16px rgba(43, 43, 43, 0.5);
+    transition: 0.5s;
+    p {
+      margin-bottom: 0.5em !important;
+    }
+    button {
+      background: none;
+      border: 1.5px solid #eee;
+      font-weight: 700;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #fff;
+      padding: 3px 9px;
+      margin-right: 0.5rem;
+      &:hover {
+        color: #33a85a;
+        background: #eee;
+      }
+    }
+  }
   button {
     outline: none !important;
   }

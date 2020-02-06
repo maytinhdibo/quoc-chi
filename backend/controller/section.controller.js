@@ -39,7 +39,25 @@ const publishSection = async (req, res) => {
       }
     );
 
-    if (draft.length == 0) throw new Error("Phiên bản nháp không tồn tại để xuất bản!");
+    if (draft.length == 0){
+      // throw new Error("Phiên bản nháp không tồn tại để xuất bản!");
+      let drafts = await db.sequelize.query(
+        `INSERT INTO section_drafts(section_id, user_id, name, description, content, published, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
+        {
+          replacements: [
+            sectionid,
+            req.tokenData.id,
+            name,
+            description,
+            content,
+            1
+          ],
+          type: db.sequelize.QueryTypes.INSERT
+        }
+      );
+      res.json(response.success());
+    } 
 
     await db.sequelize.query(
       `UPDATE section_drafts
@@ -80,7 +98,7 @@ const getListDraft = async (req, res) => {
     let sectionid = req.query.id;
 
     let drafts = await db.sequelize.query(
-      `SELECT sd.id as id, sd.name as name, sd.published as published, sd.updated_at as updated_at, u.id as user_id, u.name as user_name FROM section_drafts sd
+      `SELECT sd.id as id, sd.name as name, sd.published as published,sd.comments as comments, sd.updated_at as updated_at, u.id as user_id, u.name as user_name FROM section_drafts sd
       LEFT JOIN users u ON u.id = sd.user_id
       WHERE section_id=` +
       sectionid +
@@ -97,10 +115,11 @@ const getListDraft = async (req, res) => {
         name: object.name,
         published: object.published,
         updated_at: object.updated_at,
-        user: {
-          id: object.user_id,
-          name: object.user_name
-        }
+        comments: object.comments,
+        // user: {
+        //   id: object.user_id,
+        //   name: object.user_name
+        // }
       };
     });
 
@@ -152,7 +171,7 @@ const saveDraft = async (req, res) => {
         ` AND id = ` +
         draft[0].id,
         {
-          replacements: [req.tokenData.id, name, description, content, 0],
+          replacements: [req.tokenData.id, name, description, content, -1],
           type: db.sequelize.QueryTypes.UPDATE
         }
       );
@@ -216,7 +235,7 @@ const getSection = async (req, res) => {
           id: version
         },
 
-        attributes: ["name", "description", "content", "user_id", "id"]
+        attributes: ["name", "description", "content", "published", "id"]
       });
       if (!section) throw new Error("Phiên bản không tồn tại");
       res.json(response.success({ section }));
@@ -225,11 +244,11 @@ const getSection = async (req, res) => {
       var section = await db.section_draft.findAll({
         where: {
           section_id: sectionId,
-          user_id: req.tokenData.id
+          // user_id: req.tokenData.id
         },
         limit: 1,
         order: [["updated_at", "DESC"]],
-        attributes: ["name", "description", "content", "user_id", "id"]
+        attributes: ["name", "description", "content", "published", "id"]
       });
       if (section.length != 0) {
         res.json(response.success({ section: section[0] }));
@@ -244,6 +263,46 @@ const getSection = async (req, res) => {
     res.json(response.fail(e.message));
   }
 };
+
+const getEditableVersion = async (req, res) => {
+  try {
+    let sectionId = req.query.id;
+    var version = await db.section_draft.findOne({
+      where: {
+        section_id: sectionId,
+        published: -1
+      },
+      attributes: ["id"]
+    });
+
+    if(version){
+      res.json(response.success({version:version.id}))
+    }else{
+      //tạo bản nháp mới từ bản mới nhất
+      let section = await getLastVersion(sectionId);
+      console.log(section);
+      let drafts = await db.sequelize.query(
+        `INSERT INTO section_drafts(section_id, name, description, content, published, updated_at) 
+        VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
+        {
+          replacements: [
+            sectionId,
+            section.name,
+            section.description,
+            section.content,
+            -1
+          ],
+          type: db.sequelize.QueryTypes.INSERT
+        }
+      );
+
+      res.json(response.success({version:drafts[0]}));
+    }
+
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+}
 
 const getLastVersion = async sectionId => {
   var defaultVal = {
@@ -262,7 +321,7 @@ const getLastVersion = async sectionId => {
       },
       limit: 1,
       order: [["updated_at", "DESC"]],
-      attributes: ["name", "description", "content", "user_id", "id"]
+      attributes: ["name", "description", "content", "published", "id"]
     });
 
     if (section.length > 0) {
@@ -290,5 +349,6 @@ module.exports = {
   saveNewDraft,
   saveDraft,
   getLastVersion,
-  getSection
+  getSection,
+  getEditableVersion
 };

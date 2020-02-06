@@ -23,8 +23,11 @@ import {
   faClock,
   faSave,
   faBookMedical,
-  faBars
+  faBars,
+  faChevronDown
 } from "@fortawesome/free-solid-svg-icons";
+
+import wordCount from 'html-word-count';
 
 import CKEditor from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
@@ -57,6 +60,7 @@ import { alertText } from "../../../components/Alert";
 import sectionAPI from "../../../services/section.services";
 import analyticsAPI from "../../../services/analytics.services";
 import moment from "moment";
+import VersionItem from "./components/VersionItem";
 
 const editorConfiguration = {
   plugins: [
@@ -152,7 +156,8 @@ class EditSection extends React.Component {
     menuTool: false,
     version: null,
     modalPublish: false,
-    modalSave: false
+    modalSave: false,
+    newDraftAlert: false,
   };
   handleSection = actorValue => {
     this.setState({ actorValue });
@@ -163,7 +168,7 @@ class EditSection extends React.Component {
     const { id } = this.props.match.params;
     analyticsAPI.getSectionFull(id, version).then(object => {
       if (object.success) {
-        let { name, description, content, user_id, id } = object.data.section;
+        let { name, description, content, user_id, published, id } = object.data.section;
         this.setState({
           name,
           description,
@@ -171,7 +176,9 @@ class EditSection extends React.Component {
           user_id,
           version: object.data.section.id && 0,
           modalListDraft: false,
-          menuTool: false
+          menuTool: false,
+          newDraftAlert: published == 1,
+          published: published == 1
         });
       } else {
         alertText(object.reason);
@@ -212,7 +219,7 @@ class EditSection extends React.Component {
       )
       .then(object => {
         if (object.success) {
-          alertText("Sửa đổi thành công.");
+          alertText("Xuất thành công.");
           this.setState({ modalPublish: false });
         } else {
           alertText(object.reason);
@@ -262,6 +269,18 @@ class EditSection extends React.Component {
       });
   };
 
+  getEditableVersion = () => {
+    sectionAPI.getEditableVersion(this.props.match.params.id).then(data => {
+      if (data.success) {
+        this.props.history.push({
+          pathname: "/dashboard/sections/edit/" +
+            this.props.match.params.id,
+          search: "?version=" + data.data.version
+        })
+      }
+    })
+  }
+
   previewSection = () => {
     this.toggleModal();
   };
@@ -277,6 +296,15 @@ class EditSection extends React.Component {
           this.state.fullScreen ? "qc-rich-editor" : "qc-rich-editor mini"
         }
       >
+        <div style={{
+          right: this.state.newDraftAlert ? "40px" : "-300px"
+
+        }}
+          className="popup-create-version">
+          <p>Mục này đã được xuất bản, bấm đi đến phiên bản mới để sao chép phiên bản mới nhất hoặc phiên bản đang soạn dở để tiếp tục soạn thảo.</p>
+          <button onClick={() => this.getEditableVersion()}>Đi đến phiên bản mới</button>
+          <button onClick={() => { this.setState({ newDraftAlert: false }) }}>Hủy</button>
+        </div>
         <div style={{ position: "relative", width: "100%", height: "100%" }}>
           <Modal
             toggle={this.toggleModal}
@@ -304,40 +332,7 @@ class EditSection extends React.Component {
             <ModalBody className="modal-version-list">
               {this.state.listVersion.map(data => {
                 return (
-                  <div className="version-item">
-                    <span className="id-badge">{data.id}</span>
-
-                    <div style={{ flex: 1 }}>
-                      <RouteLink
-                        to={
-                          "/dashboard/sections/edit/" +
-                          this.props.match.params.id +
-                          "?version=" +
-                          data.id
-                        }
-                      >
-                        <b className="name">{data.name}</b>
-                      </RouteLink>
-                      <RouteLink
-                        to={"/dashboard/user/" + (data.user && data.user.id)}
-                        className="editor-name"
-                      >
-                        {data.user && data.user.name}
-                      </RouteLink>
-                    </div>
-                    <div className="status">
-                      {data.published == 1 ? (
-                        <span className="status-btn published">
-                          Đã xuất bản
-                        </span>
-                      ) : (
-                          <span className="status-btn draft">Bản lưu nháp</span>
-                        )}
-                    </div>
-                    <div className="date">
-                      {moment(data.updated_at).format("h:mm:ss DD/MM/YYYY")}
-                    </div>
-                  </div>
+                  <VersionItem data={data} match={this.props.match} />
                 );
               })}
             </ModalBody>
@@ -489,24 +484,23 @@ class EditSection extends React.Component {
             </div>
             <span className="qc-title">
               {this.state.name}
-              {this.state.user_id != localStorage.id &&
-                this.state.user_id != -1 ? (
-                  <span
-                    style={{ marginLeft: "6px" }}
-                    title="Bạn đang sửa trên nội dung của người khác, bạn chỉ có thể xem hoặc lưu thành phiên bản mới."
-                    className="qc-badge danger"
-                  >
-                    CHỈ ĐỌC
+              {this.state.published == 1 ? (
+                <span
+                  style={{ marginLeft: "6px" }}
+                  title="Bạn đang sửa trên nội dung đã được xuất bản."
+                  className="qc-badge danger"
+                >
+                  CHỈ ĐỌC
                 </span>
-                ) : null}
-              {this.state.user_id == -1 ? (
+              ) : null}
+              {/* {this.state.user_id == -1 ? (
                 <span
                   style={{ marginLeft: "6px" }}
                   className="qc-badge success"
                 >
                   PHIÊN BẢN MỚI
                 </span>
-              ) : null}
+              ) : null} */}
             </span>
             <div className="qc-gr-btn">
               <button onClick={this.previewSection} class="bar-btn">
@@ -541,6 +535,7 @@ class EditSection extends React.Component {
             editor={ClassicEditor}
             config={editorConfiguration}
             data={this.state.content}
+            // readOnly={true}
             onInit={editor => {
               // You can store the "editor" and use when it is needed.
               console.log("Editor is ready to use!", editor);
@@ -560,16 +555,22 @@ class EditSection extends React.Component {
           <div style={{
             borderTop: "1px solid #eee",
             background: "#fff",
-            textAlign: "right"
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between"
           }} className="qc-header">
+            <div style={{ padding: "6px" }}>
+              Thống kê văn bản: {wordCount(this.state.content)} từ
+            </div>
             <div style={{
-              width: "100%"
+              // width: "100%"
             }} className=" qc-gr-btn">
 
               <button
                 onClick={() => {
                   this.setState({ modalInfo: !this.state.modalInfo });
                 }}
+                disabled={this.state.published}
                 class="bar-btn"
               >
                 <span className="icon">
@@ -578,7 +579,7 @@ class EditSection extends React.Component {
                 Thông tin
               </button>
 
-              <button onClick={() => this.setState({ modalSave: true })} class="bar-btn">
+              <button disabled={this.state.published} onClick={() => this.setState({ modalSave: true })} class="bar-btn">
                 <span className="icon">
                   <FontAwesomeIcon icon={faSave} />
                 </span>
@@ -591,7 +592,7 @@ class EditSection extends React.Component {
                 </span>
                 Lưu bản nháp mới
               </button> */}
-              <button onClick={() => this.setState({ modalPublish: true })} class="bar-btn">
+              <button disabled={this.state.published} onClick={() => this.setState({ modalPublish: true })} class="bar-btn">
                 <span className="icon">
                   <FontAwesomeIcon icon={faCheck} />
                 </span>

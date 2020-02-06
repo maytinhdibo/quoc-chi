@@ -44,6 +44,20 @@ const getListDraft = id => {
   });
 };
 
+const getEditableVersion = id => {
+  const url = app.API_URL + `/section/editable-version?id=` + id;
+  const request = new Request(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.token,
+    },
+  });
+  return fetch(request).then(response => {
+    return response.json();
+  });
+};
+
 const saveNewDraft = (data, id) => {
   // console.log("ahihi");
   // const url = app.API_URL + `/section/draft/new?id=` + id;
@@ -81,6 +95,7 @@ const sectionAPI = {
   getListDraft,
   saveNewDraft,
   saveDraft,
+  getEditableVersion
 };
 
 export default sectionAPI;
