@@ -1,6 +1,8 @@
 const db = require("../models");
 const response = require("../utils/response");
 
+const moment = require("moment");
+
 const newSection = async (req, res) => {
   try {
     let chapterId = req.query.id;
@@ -39,7 +41,7 @@ const publishSection = async (req, res) => {
       }
     );
 
-    if (draft.length == 0){
+    if (draft.length == 0) {
       // throw new Error("Phiên bản nháp không tồn tại để xuất bản!");
       let drafts = await db.sequelize.query(
         `INSERT INTO section_drafts(section_id, user_id, name, description, content, published, updated_at) 
@@ -57,7 +59,7 @@ const publishSection = async (req, res) => {
         }
       );
       res.json(response.success());
-    } 
+    }
 
     await db.sequelize.query(
       `UPDATE section_drafts
@@ -132,8 +134,9 @@ const getListDraft = async (req, res) => {
 const saveDraft = async (req, res) => {
   try {
     let sectionid = req.query.id;
-    let { name, description, content } = req.body;
+    let { name, description, content, commit } = req.body;
 
+    commit = "<li>(" + moment().format('DD/MM/YYYY H:MM') + ") " + commit + "</li>";
 
     let section = await db.section.findOne({
       where: {
@@ -144,7 +147,7 @@ const saveDraft = async (req, res) => {
     if (section) {
 
       let draft = await db.sequelize.query(
-        "SELECT * FROM section_drafts WHERE section_id = " + sectionid + " AND published = 0 LIMIT 1",
+        "SELECT * FROM section_drafts WHERE section_id = " + sectionid + " AND published = -1 LIMIT 1",
         {
           type: db.sequelize.QueryTypes.SELECT
         }
@@ -156,7 +159,6 @@ const saveDraft = async (req, res) => {
         saveNewDraft(req, res);
         return 0;
       }
-      console.log(draft);
 
       await db.sequelize.query(
         `UPDATE section_drafts
@@ -165,13 +167,14 @@ const saveDraft = async (req, res) => {
         description = ?, 
         content = ?,
         published = ?,
+        comments = ?,
         updated_at = CURRENT_TIMESTAMP()
         WHERE section_id = ` +
         sectionid +
         ` AND id = ` +
         draft[0].id,
         {
-          replacements: [req.tokenData.id, name, description, content, -1],
+          replacements: [req.tokenData.id, name, description, content, -1, draft[0].comments + commit],
           type: db.sequelize.QueryTypes.UPDATE
         }
       );
@@ -187,9 +190,9 @@ const saveDraft = async (req, res) => {
 const saveNewDraft = async (req, res) => {
   try {
     let sectionid = req.query.id;
-    let { name, description, content } = req.body;
+    let { name, description, content, commit } = req.body;
 
-    console.log(req.body);
+    commit = "<li>(" + moment().format('DD/MM/YYYY H:MM') + ") " + commit + "</li>";
 
     let section = await db.section.findOne({
       where: {
@@ -199,8 +202,8 @@ const saveNewDraft = async (req, res) => {
 
     if (section) {
       let drafts = await db.sequelize.query(
-        `INSERT INTO section_drafts(section_id, user_id, name, description, content, published, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
+        `INSERT INTO section_drafts(section_id, user_id, name, description, content, published, updated_at, comments) 
+        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP(), ?)`,
         {
           replacements: [
             sectionid,
@@ -208,7 +211,8 @@ const saveNewDraft = async (req, res) => {
             name,
             description,
             content,
-            0
+            0,
+            commit
           ],
           type: db.sequelize.QueryTypes.INSERT
         }
@@ -275,28 +279,29 @@ const getEditableVersion = async (req, res) => {
       attributes: ["id"]
     });
 
-    if(version){
-      res.json(response.success({version:version.id}))
-    }else{
+    if (version) {
+      res.json(response.success({ version: version.id }))
+    } else {
       //tạo bản nháp mới từ bản mới nhất
       let section = await getLastVersion(sectionId);
       console.log(section);
       let drafts = await db.sequelize.query(
-        `INSERT INTO section_drafts(section_id, name, description, content, published, updated_at) 
-        VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
+        `INSERT INTO section_drafts(section_id, name, description, content, published, comments, updated_at) 
+        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
         {
           replacements: [
             sectionId,
             section.name,
             section.description,
             section.content,
-            -1
+            -1,
+            ""
           ],
           type: db.sequelize.QueryTypes.INSERT
         }
       );
 
-      res.json(response.success({version:drafts[0]}));
+      res.json(response.success({ version: drafts[0] }));
     }
 
   } catch (e) {

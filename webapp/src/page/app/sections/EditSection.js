@@ -158,6 +158,7 @@ class EditSection extends React.Component {
     modalPublish: false,
     modalSave: false,
     newDraftAlert: false,
+    commitVersion: ""
   };
   handleSection = actorValue => {
     this.setState({ actorValue });
@@ -231,29 +232,30 @@ class EditSection extends React.Component {
   };
 
   saveNewDraft = () => {
-    let { description, name, content } = this.state;
-    sectionAPI
-      .saveNewDraft({ description, name, content }, this.props.match.params.id)
-      .then(object => {
-        if (object.success) {
-          alertText("Bản nháp mới đã tạo thành công.");
-        } else {
-          alertText(object.reason);
-        }
-      })
-      .catch(e => {
-        alertText(e.message);
-      });
+    // let { description, name, content } = this.state;
+    // sectionAPI
+    //   .saveNewDraft({ description, name, content }, this.props.match.params.id)
+    //   .then(object => {
+    //     if (object.success) {
+    //       alertText("Bản nháp mới đã tạo thành công.");
+    //     } else {
+    //       alertText(object.reason);
+    //     }
+    //   })
+    //   .catch(e => {
+    //     alertText(e.message);
+    //   });
   };
 
   saveDraft = () => {
     let { description, name, content } = this.state;
+    let commit = this.state.commitVersion;
     let version =
       queryString.parse(this.props.location.search).version &&
       this.state.version;
     sectionAPI
       .saveDraft(
-        { description, name, content },
+        { description, name, content, commit },
         this.props.match.params.id,
         version
       )
@@ -447,9 +449,9 @@ class EditSection extends React.Component {
 
               <FormGroup>
                 <Input
-                  value={this.state.description}
+                  value={this.state.commitVersion}
                   onChange={evt =>
-                    this.setState({ description: evt.target.value })
+                    this.setState({ commitVersion: evt.target.value })
                   }
                   style={{ height: "150px" }}
                   type="textarea"
