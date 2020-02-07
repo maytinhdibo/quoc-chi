@@ -5,7 +5,7 @@ const roleSection = require("../../middleware/verify_section_role.js");
 const controller = require("../../controller/section.controller");
 
 router.post("/new", auth.verifyAccessToken, controller.newSection);
-router.post("/publish", auth.verifyAccessToken, controller.publishSection);
+router.post("/publish", auth.verifyAccessToken, roleSection.isEditableSection, controller.publishSection);
 router.get("/get", auth.verifyAccessToken, controller.getSection);
 router.get("/editable-version", auth.verifyAccessToken, controller.getEditableVersion);
 router.get("/draft/list", auth.verifyAccessToken, controller.getListDraft);

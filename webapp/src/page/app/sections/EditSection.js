@@ -340,6 +340,7 @@ class EditSection extends React.Component {
               Lịch sử phiên bản
             </ModalHeader>
             <ModalBody className="modal-version-list">
+              {this.state.listVersion.length == 0 ? "Không tồn tại danh sách phiên bản" : ""}
               {this.state.listVersion.map(data => {
                 return (
                   <VersionItem data={data} match={this.props.match} />

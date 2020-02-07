@@ -213,7 +213,7 @@ const saveNewDraft = async (req, res) => {
             name,
             description,
             content,
-            0,
+            -1,
             commit
           ],
           type: db.sequelize.QueryTypes.INSERT
