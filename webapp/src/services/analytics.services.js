@@ -126,8 +126,8 @@ const getSection = (sectionId, version) => {
   });
 };
 
-const getSectionFull = (sectionId, version) => {
-  const url = app.API_URL + `/section/get?id=` + sectionId+"&draft="+version;
+const getSectionFull = (sectionId, version, type) => {
+  const url = app.API_URL + `/section/get?id=` + sectionId+"&draft="+version+"&type="+type;
   const request = new Request(url, {
     method: "GET",
     headers: {

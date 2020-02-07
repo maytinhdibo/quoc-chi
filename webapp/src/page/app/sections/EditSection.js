@@ -167,7 +167,7 @@ class EditSection extends React.Component {
   loadSection = () => {
     const version = queryString.parse(this.props.location.search).version;
     const { id } = this.props.match.params;
-    analyticsAPI.getSectionFull(id, version).then(object => {
+    analyticsAPI.getSectionFull(id, version, "edit").then(object => {
       if (object.success) {
         let { name, description, content, user_id, published, id } = object.data.section;
         this.setState({
@@ -182,8 +182,16 @@ class EditSection extends React.Component {
           published: published == 1
         });
       } else {
-        alertText(object.reason);
+        throw new Error(object.reason);
       }
+    }).catch(e => {
+      alertText(e.message);
+      this.setState({
+        name: "",
+        description: "",
+        newDraftAlert: false,
+        published: true
+      });
     });
   };
 

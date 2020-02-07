@@ -1,6 +1,8 @@
 const db = require("../models");
 const response = require("../utils/response");
 
+const {sectionRole} = require("../middleware/verify_section_role");
+
 const moment = require("moment");
 
 const newSection = async (req, res) => {
@@ -227,10 +229,19 @@ const saveNewDraft = async (req, res) => {
   }
 };
 
+
 const getSection = async (req, res) => {
   try {
     let sectionId = req.query.id;
     let version = req.query.draft;
+
+    //type is edit/null
+    let type = req.query.type;
+
+    if (type == "edit") {
+      let role = await sectionRole(req.tokenData.id, sectionId);
+      if (role == 0) throw new Error("Bạn không có quyền đối với mục này");
+    }
 
     if (version != "undefined") {
       var section = await db.section_draft.findOne({
