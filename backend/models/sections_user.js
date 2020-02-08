@@ -9,6 +9,11 @@ module.exports = function (sequelize, Sequelize) {
       field: 'user_id',
       type: Sequelize.BIGINT,
       allowNull: false,
+    },
+    role: {
+      field: 'role',
+      type: Sequelize.INTEGER,
+      allowNull: false,
     }
   },
     { timestamps: false }

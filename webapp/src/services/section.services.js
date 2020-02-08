@@ -89,13 +89,44 @@ const saveDraft = (data, id, draft) => {
   });
 };
 
+const getEditors = (id) => {
+  const url = app.API_URL + `/section/editors?id=` + id;
+  const request = new Request(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.token,
+    },
+  });
+  return fetch(request).then(response => {
+    return response.json();
+  });
+};
+
+const editEditors = (id, data) => {
+  const url = app.API_URL + `/section/editors/edit?id=` + id;
+  const request = new Request(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.token,
+    },
+    body: JSON.stringify(data),
+  });
+  return fetch(request).then(response => {
+    return response.json();
+  });
+};
+
 const sectionAPI = {
   newSection,
   publishSection,
   getListDraft,
   saveNewDraft,
   saveDraft,
-  getEditableVersion
+  getEditableVersion,
+  getEditors,
+  editEditors
 };
 
 export default sectionAPI;

@@ -1,7 +1,7 @@
 const db = require("../models");
 const response = require("../utils/response");
 
-const {sectionRole} = require("../middleware/verify_section_role");
+const { sectionRole } = require("../middleware/verify_section_role");
 
 const moment = require("moment");
 
@@ -358,6 +358,57 @@ const getLastVersion = async sectionId => {
   }
 };
 
+const getEditors = async (req, res) => {
+  try {
+    const sectionId = req.query.id;
+
+    var editors = await db.sections_user.findAll({
+      where: {
+        section_id: sectionId
+      },
+      attributes: [],
+      include: [
+        {
+          attributes: ["name", "email", "id"],
+          model: db.user
+        }
+      ]
+    });
+
+    editors = editors.map(role => {
+      return role.user;
+    })
+
+    res.json(response.success(editors));
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+};
+
+const editEditors = async (req, res) => {
+  try {
+    const sectionId = req.query.id;
+    const { users } = req.body;
+
+    await db.sequelize.query(
+      `DELETE FROM sections_users WHERE section_id = ` + sectionId,
+      { type: db.sequelize.QueryTypes.DELETE }
+    );
+
+    users.forEach(async (element) => {
+      await db.sections_user.create({
+        sectionId: sectionId,
+        userId: element,
+        role: 1
+      });
+    });
+
+    res.json(response.success());
+  } catch (e) {
+    res.json(response.fail(e.message));
+  }
+};
+
 module.exports = {
   newSection,
   publishSection,
@@ -366,5 +417,7 @@ module.exports = {
   saveDraft,
   getLastVersion,
   getSection,
-  getEditableVersion
+  getEditableVersion,
+  getEditors,
+  editEditors,
 };

@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ReactTable from "react-table";
-import { Col, Row } from "reactstrap";
 import Pagination from "../../../components/Pagination";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReactLoading from "react-loading";
@@ -10,11 +9,13 @@ import {
   faFilePdf,
   faChartBar,
   faChevronDown,
-  faEdit
+  faEdit,
+  faUserEdit
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import duplicateAPI from "../../../services/duplicate.services";
 import language from "../../../config/language";
+import EditorRole from "./components/EditorRole";
 
 class Section extends React.Component {
   constructor(props) {
@@ -24,8 +25,12 @@ class Section extends React.Component {
       dataList: [],
       filter: "",
       loaded: false,
-      list: []
+      list: [],
+      roleEditModal: false
     };
+  }
+  toggleRoleEditModal = () => {
+    this.setState({ roleEditModal: !this.state.roleEditModal });
   }
   componentDidMount() {
     const { id } = this.props.match.params;
@@ -129,6 +134,9 @@ class Section extends React.Component {
 
     return (
       <div>
+
+        <EditorRole sectionId={this.props.match.params.id} isOpen={this.state.roleEditModal} toggleModal={this.toggleRoleEditModal} />
+
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -151,15 +159,15 @@ class Section extends React.Component {
                         <span className="icon">
                           <FontAwesomeIcon icon={faEdit} />
                         </span>
-                        Chỉnh sửa
+                        Soạn thảo
                       </li>
                     </Link>
-                    <Link to="/">
+                    <Link onClick={() => this.toggleRoleEditModal()}>
                       <li>
                         <span className="icon">
-                          <FontAwesomeIcon icon={faFilePdf} />
+                          <FontAwesomeIcon icon={faUserEdit} />
                         </span>
-                        Kết xuất PDF
+                        Biên tập viên
                       </li>
                     </Link>
                     <Link to="/">
@@ -186,7 +194,7 @@ class Section extends React.Component {
                 }
               ></p>
               <hr />
-              <div className="qc-section-title">Người duyệt</div>
+              {/* <div className="qc-section-title">Người duyệt</div>
               <p>
                 {this.state.data.section && this.state.data.section.reviewer ? (
                   <Link
@@ -197,11 +205,11 @@ class Section extends React.Component {
                     {this.state.data.section.reviewer.name}
                   </Link>
                 ) : null}
-              </p>
+              </p> */}
             </div>
           ) : (
-            <ReactLoading className="qc-loading" type="spin" color="#888" />
-          )}
+              <ReactLoading className="qc-loading" type="spin" color="#888" />
+            )}
         </div>
         <div className="qc-content qc-card">
           <div className="qc-card-header">
