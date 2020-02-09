@@ -324,7 +324,6 @@ const getSections = async (req, res) => {
 
 const getEditorSections = async (req, res) => {
   try {
-    let chapterId = req.query.id;
     var sections = await db.sequelize.query(
       `
     SELECT s.id as section_id, s.name as section_name,
@@ -333,7 +332,7 @@ const getEditorSections = async (req, res) => {
     s.section_state_id as state_id, ss.name as state_name, s.updated_at,
     T1.count as document_count
     FROM sections s
-    INNER JOIN sections_users su ON su.section_id=s.id AND su.user_id = ` +
+    INNER JOIN sections_users su ON su.role <> 0 AND su.section_id=s.id AND su.user_id = ` +
         req.tokenData.id +
         `
     LEFT JOIN users u ON su.user_id = u.id

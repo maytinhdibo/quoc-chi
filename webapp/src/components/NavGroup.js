@@ -57,17 +57,18 @@ class NavGroup extends React.Component {
           </NavLink>
         </ul>
 
-        <ul className="qc-sidebar-ul">
-          <label>Thống kê</label>
-          <NavLink activeClassName="selected" to="/dashboard/analytics">
-            <li>
-              <span className="icon">
-                <FontAwesomeIcon icon={faChartBar} />
-              </span>
-              Thống kê tổng quan
+        {this.props.role.type == "admin" ?
+          <ul className="qc-sidebar-ul">
+            <label>Thống kê</label>
+            <NavLink activeClassName="selected" to="/dashboard/analytics">
+              <li>
+                <span className="icon">
+                  <FontAwesomeIcon icon={faChartBar} />
+                </span>
+                Thống kê tổng quan
             </li>
-          </NavLink>
-        </ul>
+            </NavLink>
+          </ul> : null}
 
         {this.props.role.type == "admin" ? (
           <ul className="qc-sidebar-ul">
