@@ -39,10 +39,43 @@ const genRole = async userId => {
       roleId: 1
     }
   });
+
+  //admin role
   if (adminRole) {
     return {
       type: "admin",
       path: "/analytics"
+    };
+  }
+
+  //book role
+  const bookAdminRole = await db.books_user.findOne({
+    where: {
+      userId,
+      bookRoleId: 1
+    }
+  });
+
+  if (bookAdminRole) {
+    return {
+      type: "book-admin",
+      path: "/books/detail/" + bookAdminRole.bookId,
+      bookId: bookAdminRole.bookId
+    };
+  }
+
+  //volume role
+  const volumeAdminRole = await db.users_volume.findOne({
+    where: {
+      userId
+    }
+  });
+
+  if (volumeAdminRole) {
+    return {
+      type: "volume-admin",
+      path: "/volumes/detail/" + volumeAdminRole.volumeId,
+      volumeId: volumeAdminRole.volumeId
     };
   }
 
@@ -144,7 +177,7 @@ const register = async (req, res) => {
           email: email
         }
       });
-    } catch (e) {}
+    } catch (e) { }
     res.json(response.fail(e.message));
   }
 };
@@ -230,7 +263,7 @@ const get = async (req, res) => {
         }
       });
 
-      result = result.filter(function(el) {
+      result = result.filter(function (el) {
         return el != null;
       });
 
@@ -306,7 +339,7 @@ const getInfo = async (req, res) => {
       where: {
         id: id
       },
-      include: [{ model: db.academic_title},{ model: db.organization}]
+      include: [{ model: db.academic_title }, { model: db.organization }]
     });
 
 
