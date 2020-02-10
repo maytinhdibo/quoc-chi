@@ -48,6 +48,7 @@ import Doc from "./documentations/Doc";
 import NewSection from "./sections/NewSection";
 import UserRouter from "./UserRouter";
 import EditorDashboard from "./sections/EditorDashboard";
+import EditUser from "./users/EditUser";
 
 class DashBoard extends React.Component {
   constructor(props) {
@@ -200,6 +201,21 @@ class DashBoard extends React.Component {
           />
         ),
         main: User
+      },
+      {
+        path: "/dashboard/edit-info",
+        sidebar: () => (
+          <Breadcrumb
+            data={[
+              {
+                path: "#",
+                name: "Chỉnh sửa thông tin"
+              }
+            ]}
+            title={<span>Chỉnh sửa thông tin</span>}
+          />
+        ),
+        main: EditUser
       },
       {
         path: "/dashboard/search",

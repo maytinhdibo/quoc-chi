@@ -1,10 +1,11 @@
 import React from 'react';
-import { Col, Row, Container } from 'reactstrap';
+import { Col, Row, Container, FormGroup, Label, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserCircle, faGraduationCap, faSchool, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle, faGraduationCap, faSchool, faClipboardList, faUserEdit } from '@fortawesome/free-solid-svg-icons';
 import userAPI from '../../services/user.services';
 import { alertText } from '../../components/Alert';
 import { Link } from 'react-router-dom';
+import Select from 'react-select';
 
 class User extends React.Component {
     constructor(props) {
@@ -33,21 +34,24 @@ class User extends React.Component {
         })
     }
     render() {
-        let role = this.state.book_roles.filter(ele=>(ele.book_role && ele.book_role.name != "No role")).map(ele => {
-                return <div>{ele.book_role.name} {"tập "}
-                    <Link to={"../books/detail/" + ele.book.id}>{ele.book.name}</Link>
-                </div>;
+        let role = this.state.book_roles.filter(ele => (ele.book_role && ele.book_role.name != "No role")).map(ele => {
+            return <div>{ele.book_role.name} {"tập "}
+                <Link to={"../books/detail/" + ele.book.id}>{ele.book.name}</Link>
+            </div>;
         })
         return (
             <div className="qc-content qc-card user">
                 <div className="qc-card-header">
                     Thông tin tài khoản
-      </div>
+                   {this.props.match.params.id == localStorage.id ? <Link to={"/dashboard/edit-info"}>
+                        <FontAwesomeIcon style={{ marginLeft: 6 }} icon={faUserEdit} />
+                    </Link> : null}
+                </div>
                 <Row>
                     <Col style={{
                         overflowWrap: "break-word"
                     }}
-                     className="column" md="4">
+                        className="column" md="4">
                         <FontAwesomeIcon className="user-avatar" icon={faUserCircle} />
                         <br />
                         <h4>{this.state.academic_title.name}{this.state.academic_title.name ? ". " : ""}{this.state.name}</h4>
@@ -92,6 +96,7 @@ class User extends React.Component {
 
                     </Col>
                 </Row>
+
             </div>
         )
     }
