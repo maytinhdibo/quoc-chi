@@ -12,6 +12,7 @@ router.post("/user/login", controller.login);
 router.get("/user", auth.verifyAccessToken, controller.getRefresh);
 router.post("/user/getList", auth.verifyAccessToken, controller.get);
 router.get("/user/getInfo", auth.verifyAccessToken, controller.getInfo);
+router.post("/user/edit", auth.verifyAccessToken, controller.editInfo);
 router.post("/user/register", controller.register);
 
 // router.get("/user", (req, res, next) => {

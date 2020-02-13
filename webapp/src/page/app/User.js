@@ -33,6 +33,7 @@ class User extends React.Component {
             alertText(e.message);
         })
     }
+
     render() {
         let role = this.state.book_roles.filter(ele => (ele.book_role && ele.book_role.name != "No role")).map(ele => {
             return <div>{ele.book_role.name} {"tập "}
@@ -43,9 +44,6 @@ class User extends React.Component {
             <div className="qc-content qc-card user">
                 <div className="qc-card-header">
                     Thông tin tài khoản
-                   {this.props.match.params.id == localStorage.id ? <Link to={"/dashboard/edit-info"}>
-                        <FontAwesomeIcon style={{ marginLeft: 6 }} icon={faUserEdit} />
-                    </Link> : null}
                 </div>
                 <Row>
                     <Col style={{
@@ -56,6 +54,15 @@ class User extends React.Component {
                         <br />
                         <h4>{this.state.academic_title.name}{this.state.academic_title.name ? ". " : ""}{this.state.name}</h4>
                         <a href={"mailto:" + this.state.email}>{this.state.email}</a>
+
+                        <br />
+                        {this.props.match.params.id == localStorage.id ?
+                            <Link to={"/dashboard/edit-info"}>
+                                <button style={{ marginTop: "0.2em" }} className="qc-btn">
+                                    <FontAwesomeIcon style={{ marginRight: 6 }} icon={faUserEdit} />
+                                    Chỉnh sửa thông tin
+                                </button>
+                            </Link> : null}
                     </Col>
                     <Col className="column" md="8">
                         {this.state.academic_title.fullname ? <Row>
@@ -78,7 +85,7 @@ class User extends React.Component {
                         </Col>
                                 <Col xs="8">
                                     <span class="qc-color">
-                                        {this.state.organization}
+                                        {this.state.organization.name}
                                     </span>
                                 </Col>
                             </Row> : null

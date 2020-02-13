@@ -32,6 +32,30 @@ const login = async (req, res) => {
   }
 };
 
+const editInfo = async (req, res) => {
+  try {
+    const userId = req.tokenData.id;
+    const { name, email, organization, academic_title } = req.body;
+    let user = await db.user.findOne({
+      where: {
+        id: userId
+      }
+    });
+    if (!user) {
+      throw new Error("Tài khoản không tồn tại!");
+    } else {
+      user.name = name;
+      user.email = email;
+      user.academicTitleId = academic_title;
+      user.organizationId = organization;
+      await user.save();
+      res.json(response.success());
+    }
+  } catch (err) {
+    return res.json(response.fail(err.message));
+  }
+}
+
 const genRole = async userId => {
   const adminRole = await db.users_role.findOne({
     where: {
@@ -388,8 +412,13 @@ const getInfo = async (req, res) => {
       );
 
       let { name, email, phone } = user;
-      let organization = user.organization && user.organization.name;
+      let organization = {
+        id: user.organization && user.organization.id,
+        name: user.organization && user.organization.name
+      };
+
       let academic_title = {
+        id: user.academic_title && user.academic_title.id,
         name: user.academic_title && user.academic_title.name,
         fullname: user.academic_title && user.academic_title.fullname
       };
@@ -422,5 +451,6 @@ module.exports = {
   register,
   get,
   getInfo,
-  getRefresh
+  getRefresh,
+  editInfo
 };

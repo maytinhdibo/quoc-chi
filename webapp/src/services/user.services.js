@@ -34,6 +34,22 @@ const createUser = (datauser) => {
         });
 };
 
+const editInfo = (datauser) => {
+    const url = app.API_URL + `/user/edit`;
+    const request = new Request(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'token': localStorage.token
+        },
+        body: JSON.stringify(datauser)
+    })
+    return fetch(request)
+        .then(response => {
+            return response.json();
+        });
+};
+
 const get = () => {
     const url = app.API_URL + `/user`;
     const request = new Request(url, {
@@ -89,7 +105,8 @@ const userAPI = {
     get,
     getInfo,
     createUser,
-    getList
+    getList,
+    editInfo
 }
 
 export default userAPI;

@@ -39,182 +39,162 @@ const optionChapter = [
 const defaultValue = null;
 
 class EditUser extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      filter: "",
-      loading: 0,
-      data: 0,
-      defaultValue: defaultValue,
-      valueUserRole: defaultValue,
-      valueEditorRole: defaultValue,
-      valueBook: defaultValue,
-      optionBook: [],
-      valueVolume: defaultValue,
-      optionVolume: [],
-      valueChapter: defaultValue,
-      optionChapter: []
-    };
+      name: null,
+      email: null,
+      academic_title: {
+        id: null,
+        name: null,
+        fullname: null
+      },
+      organization: {
+        id: null,
+        name: null
+      },
+      book_roles: [],
+      optionOrganization: [],
+      optionTitle: [],
+      valueOrganization: null
+    }
   }
-  handleSection = sectionValue => {
-    this.setState({ sectionValue });
-  };
-  handleBook = value => {
-    this.setState({ valueBook: value });
-    this.setState({ valueVolume: null, valueChapter: null });
 
-    this.setState({
-      optionVolume: [],
-      optionChapter: []
-    });
-
-    formAPI.getVolumes(value.value).then(object => {
-      console.log(object);
-      if (object.success) {
-        this.setState({
-          optionVolume: object.data.map(ele => {
-            return {
-              value: ele.id,
-              label: ele.name
-            };
-          })
+  editInfo = () => {
+    let { name, email, valueTitle, valueOrganization } = this.state;
+    userAPI.editInfo({
+      name, email, academic_title: valueTitle.value, organization: valueOrganization.value
+    }).then(res => {
+      if (res.success) {
+        alertText("Chỉnh sửa thông tin thành công");
+        this.props.history.push({
+          pathname: "/dashboard/user/" + localStorage.id
         });
-      }
-    });
-    this.setState({ valueBook: value });
-  };
-
-  handleVolume = value => {
-    this.setState({ valueVolume: value });
-    formAPI.getChapters(value.value).then(object => {
-      console.log(object);
-      if (object.success) {
-        this.setState({
-          optionChapter: object.data.map(ele => {
-            return {
-              value: ele.id,
-              label: ele.name
-            };
-          })
-        });
-      }
-    });
-    this.setState({ valueChapter: null });
-    this.setState({
-      optionChapter: []
-    });
-  };
-
-  filter = () => {
-    this.setState({ loading: 1 });
-    console.log(this.state.valueBook);
-    if (!this.state.valueBook) return alertText("Vui lòng nhập đủ thông tin.");
-    let valueBook = this.state.valueBook && this.state.valueBook.value;
-    let valueVolume = this.state.valueVolume && this.state.valueVolume.value;
-    let valueChapter = this.state.valueChapter && this.state.valueChapter.value;
-    userAPI.getList(valueBook, valueVolume, valueChapter).then(object => {
-      if (object.success) {
-        this.setState({
-          loading: 2,
-          data: object.data
-        });
-        console.log(object);
       } else {
-        this.setState({ loading: 0 });
-        alertText(object.reason);
+        throw new Error("Có lỗi xảy ra trong quá trình chỉnh sửa");
       }
-    });
-  };
+    }).catch(err => {
+      alertText(err.message);
+    })
+  }
 
-  renderRole = datas => {
-    return datas.map(data => {
-      if (!data.bookRole.id || !data.id) {
-        return "";
-      } else {
-        if (data.bookRole.id != 7) {
-          return (
-            <div>
-              {data.bookRole.name}{" "}
-              <a href={"/dashboard/book/" + data.id}> {data.name} </a>
-            </div>
-          );
-        } else return "";
-      }
-    });
-  };
   componentDidMount() {
-    formAPI.getBooks().then(object => {
-      if (object.success) {
-        this.setState({
-          optionBook: object.data.map(ele => {
-            return {
-              value: ele.id,
-              label: ele.name
-            };
-          })
-        });
-      }
-    });
+    formAPI
+      .get("organization,academic_title")
+      .then(object => {
+        console.log(object);
+        if (object.success) {
+          this.setState({
+            optionOrganization: object.data.organization.map(ele => {
+              return {
+                value: ele.id,
+                label: ele.name
+              };
+            }),
+            optionTitle: object.data.academic_title.map(ele => {
+              return {
+                value: ele.id,
+                label: ele.name + " - " + ele.fullname
+              };
+            })
+          });
+
+          userAPI.getInfo(localStorage.id).then(object => {
+            console.log(object);
+            if (object.success) {
+              this.setState(object.data);
+              this.setState({
+                valueOrganization: {
+                  value: this.state.organization.id,
+                  label: this.state.organization.name
+                }
+              });
+
+              this.setState({
+                valueTitle: {
+                  value: this.state.academic_title.id,
+                  label: this.state.academic_title.name + " - " + this.state.academic_title.fullname
+                }
+              });
+            } else {
+              throw new Error(object.reason);
+            }
+          }).catch(e => {
+            alertText(e.message);
+          });
+
+        } else {
+          throw new Error(object.reason);
+        }
+      })
+      .catch(e => {
+        alertText(e.message);
+      });
   }
+
   render() {
 
 
     return (
       <div className="qc-content qc-card user">
-                <div className="qc-card-header">
-                    Thông tin tài khoản
+        <div className="qc-card-header">
+          Thông tin tài khoản
                 </div>
-                <br />
-                <Row>
-                    <Col md={6}>
-                        <Label for="exampleEmail">Họ và tên</Label>
-                        <Input
-                            value={this.state.name}
-                            onChange={this.handleChange}
-                            name="name"
-                            type="text"
-                            placeholder="Họ và tên"
-                        />
-                    </Col>
+        <br />
+        <Row>
+          <Col md={6}>
+            <Label for="exampleEmail">Họ và tên</Label>
+            <Input
+              value={this.state.name}
+              onChange={evt => this.setState({ name: evt.target.value })}
+              name="name"
+              type="text"
+              placeholder="Họ và tên"
+            />
+          </Col>
 
-                    <Col md={6}>
-                        <Label for="exampleEmail">Địa chỉ email</Label>
-                        <Input
-                            value={this.state.email}
-                            onChange={this.handleChange}
-                            name="email"
-                            type="text"
-                            placeholder="Email"
-                        />
-                    </Col>
-                </Row>
-                <br />
-                <Row>
-                    <Col md={6}>
-                        <Label>Cơ quan</Label>
-                        <Select
-                            placeholder="Chọn cơ quan"
-                        //   onChange={value => this.setState({ valueOrganization: value })}
-                        //   styles={inputStyle}
-                        //   options={this.state.optionOrganization}
-                        />
-                    </Col>
-                    <Col md={6}>
-                        <Label>Học vị</Label>
-                        <Select
-                            placeholder="Chọn học vị"
-                        //   onChange={value => this.setState({ valueTitle: value })}
-                        //   styles={inputStyle}
-                        //   options={this.state.optionTitle}
-                        />
-                    </Col>
-                </Row>
+          <Col md={6}>
+            <Label for="exampleEmail">Địa chỉ email</Label>
+            <Input
+              value={this.state.email}
+              onChange={evt => this.setState({ email: evt.target.value })}
+              name="email"
+              type="text"
+              placeholder="Email"
+            />
+          </Col>
+        </Row>
 
-                <div className="qc-align-right qc-content">
-                    <button className="qc-btn">
-                        Đổi thông tin
+        <br />
+        <Row>
+          <Col md={6}>
+            <Label>Cơ quan</Label>
+            <Select
+              placeholder="Chọn cơ quan"
+              value={this.state.valueOrganization}
+              onChange={value => this.setState({ valueOrganization: value })}
+              styles={inputStyle}
+              options={this.state.optionOrganization}
+            />
+          </Col>
+          <Col md={6}>
+            <Label>Học vị</Label>
+            <Select
+              placeholder="Chọn học vị"
+              value={this.state.valueTitle}
+              onChange={value => this.setState({ valueTitle: value })}
+              styles={inputStyle}
+              options={this.state.optionTitle}
+            />
+          </Col>
+        </Row>
+
+        <div className="qc-align-right qc-content">
+          <button onClick={this.editInfo} className="qc-btn">
+            Đổi thông tin
                </button>
-                </div>
+        </div>
       </div>
     );
   }
