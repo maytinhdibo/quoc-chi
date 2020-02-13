@@ -167,7 +167,7 @@ class EditBook extends React.Component {
                     <CKEditor
                         editor={ClassicEditor}
                         config={editorConfiguration}
-                        data={this.state.description}
+                        data={this.state.description || null}
                         onInit={editor => {
                             // You can store the "editor" and use when it is needed.
                             console.log('Editor is ready to use!', editor);

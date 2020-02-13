@@ -403,11 +403,11 @@ class Analytic extends React.Component {
           </div>
         </div>
         <br />
-        <div className="qc-card">
+        {/* <div className="qc-card">
           <div className="qc-card-header">Thống kê biên tập viên</div>
           <div className="card-body">
             <Bar
-              height={400}
+              height={100}
               // data={this.convertData(chartData)}
               data={{
                 labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -460,34 +460,11 @@ class Analytic extends React.Component {
                   }
                 ]
               }}
-              options={{
-                maintainAspectRatio: false,
-                scales: {
-                  yAxes: [
-                    {
-                      stacked: true,
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }
-                  ],
-                  xAxes: [
-                    {
-                      stacked: true,
-                      scaleLabel: {
-                        display: true,
-                        labelString: "Thống kê biên tập viên"
-                      },
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }
-                  ]
-                }
-              }}
+           
             />
           </div>
-        </div>
+        </div> */}
+   
       </div>
     );
   }
