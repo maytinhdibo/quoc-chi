@@ -18,24 +18,6 @@ import userAPI from "../../../services/user.services";
 import formAPI from "../../../services/form.services";
 import { alertText } from "../../../components/Alert";
 
-const optionSection = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
-];
-
-const optionBook = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
-];
-
-const optionChapter = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
-];
-
 const defaultValue = null;
 
 class EditUser extends React.Component {
@@ -68,6 +50,7 @@ class EditUser extends React.Component {
     }).then(res => {
       if (res.success) {
         alertText("Chỉnh sửa thông tin thành công");
+        localStorage.name = name;
         this.props.history.push({
           pathname: "/dashboard/user/" + localStorage.id
         });
