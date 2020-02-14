@@ -14,7 +14,7 @@ const isAdmin = async (req, res, next) => {
       }
     });
     if (user) {
-      next();
+      return next();
     } else {
       return res.json(response.fail("Bạn không có quyền truy cập nội dung này", "NO_ROLE"));
     }
@@ -23,6 +23,42 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
+const isVolumeAdmin = async (req, res, next, volumeId) => {
+  try {
+
+    const volumeAdmin = await db.users_volume.findOne({
+      where: {
+        volumeId,
+        userId: req.tokenData.id
+      }
+    });
+
+    if (volumeAdmin) {
+     return next();
+    }
+
+    const volume = await db.volume.findOne({
+      where: { id: volumeId }
+    })
+
+    if (!volume) return res.json(response.fail("Mục không tồn tại"));
+
+    const bookRole = await db.books_user.findOne({
+      where: { bookId: volume.bookId, userId: req.tokenData.id, bookRoleId: 1 }
+    })
+
+    if (bookRole) return next();
+
+    return isAdmin(req, res, next);
+
+  } catch (err) {
+
+    console.log(err);
+    return res.json(response.fail("Bạn không có quyền với mục này"));
+  }
+}
+
 module.exports = {
-  isAdmin
+  isAdmin,
+  isVolumeAdmin
 };
