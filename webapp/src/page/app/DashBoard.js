@@ -337,7 +337,7 @@ class DashBoard extends React.Component {
                 name: "Quản lý tập"
               }
             ]}
-            title={<span>Thêm chương mới</span>}
+            title={<span>Thêm quyển mới</span>}
           />
         ),
         main: NewVolume
