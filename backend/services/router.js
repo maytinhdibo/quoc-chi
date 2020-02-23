@@ -11,7 +11,7 @@ const chapterRouter = require("./api/chapter");
 const sectionRouter = require("./api/section");
 const docRouter = require("./api/documentation");
 const checkDuplicate = require("./api/checkduplicate");
-
+const deleteRouter = require("./api/delete");
 router.use("/", userRouter);
 router.use("/form-data", formRouter);
 router.use("/analytics", analyticsRouter);
@@ -22,6 +22,7 @@ router.use("/chapter", chapterRouter);
 router.use("/section", sectionRouter);
 router.use("/doc", docRouter);
 router.use("/duplicate", checkDuplicate);
+router.use("/delete", deleteRouter);
 
 
 module.exports = router;
