@@ -10,9 +10,12 @@ import {
   faFilePdf,
   faChartBar,
   faChevronDown,
-  faEdit
+  faEdit,
+  faCut
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
+import DeleteRole from "./DeleteRole";
+
 
 class Chapter extends React.Component {
   constructor(props) {
@@ -23,6 +26,9 @@ class Chapter extends React.Component {
       loaded: false,
       list: []
     };
+  }
+  toggleRoleDeleteModal = () => {
+    this.setState({ roleDeleteModal: !this.state.roleDeleteModal });
   }
   componentDidMount() {
     analyticsAPI.getChapter(this.props.match.params.id).then(object => {
@@ -135,6 +141,8 @@ class Chapter extends React.Component {
     ];
     return (
       <div>
+        < DeleteRole chapterId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal} />
+
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -182,6 +190,14 @@ class Chapter extends React.Component {
                           <FontAwesomeIcon icon={faChartBar} />
                         </span>
                         Thống kê
+                      </li>
+                    </Link>
+                    <Link onClick={() => this.toggleRoleDeleteModal()}>
+                      <li>
+                        <span className="icon">
+                          <FontAwesomeIcon icon={faCut} />
+                        </span>
+                        Xóa chương
                       </li>
                     </Link>
                   </ul>

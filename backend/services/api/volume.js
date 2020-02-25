@@ -8,5 +8,6 @@ router.post("/new", auth.verifyAccessToken, controller.newVolume);
 router.post("/edit", auth.verifyAccessToken, async function (req, res, next) {
     return authUserRole.isVolumeAdmin(req, res, next, req.query.id);
 }, controller.editVolume);
+router.delete("/delete", controller.deleteVolume);
 
 module.exports = router;

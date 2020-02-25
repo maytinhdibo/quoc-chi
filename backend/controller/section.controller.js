@@ -410,21 +410,33 @@ const editEditors = async (req, res) => {
 };
 const deleteSectionDraft= async  (req, res) => {
   try{
-    // let setionid = req.query.id;
-    // await db.section_draft.destroy({
-    //     where: {
-    //         section_id: setionid
-    //     }
+    let sectionId = req.query.id;
+    db.sections_user.destroy({
+      where: {
+        section_id: sectionId
+      }
+    })
+    db.section_draft.destroy({
+      where: {
+        section_id: sectionId
+      }
+    })
+
+    // db.sections_docs_log.destroy({
+    //   where: {
+    //       section_id: sectionId
+    //   }
     // })
-    const sectionId = req.query.id;
-    const { users } = req.body;
-
-    await db.sequelize.query(
-      `DELETE FROM section_draft WHERE section_id = ` + sectionId,
-      { type: db.sequelize.QueryTypes.DELETE }
-    );
-
-    res.log("xóa thành công");
+    db.sections_log.destroy({
+      where: {
+        section_id: sectionId
+      }
+    })
+    db.section.destroy({
+      where: {
+        id : sectionId
+      }
+    })
     res.json(response.success());
   }
   catch(e){

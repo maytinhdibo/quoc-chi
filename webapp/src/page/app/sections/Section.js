@@ -10,12 +10,14 @@ import {
   faChartBar,
   faChevronDown,
   faEdit,
-  faUserEdit
+  faUserEdit,
+  faCut
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import duplicateAPI from "../../../services/duplicate.services";
 import language from "../../../config/language";
 import EditorRole from "./components/EditorRole";
+import DeleteRole from "./components/DeleteRole";
 
 class Section extends React.Component {
   constructor(props) {
@@ -26,11 +28,15 @@ class Section extends React.Component {
       filter: "",
       loaded: false,
       list: [],
-      roleEditModal: false
+      roleEditModal: false,
+      roleDeleteModal : false
     };
   }
   toggleRoleEditModal = () => {
     this.setState({ roleEditModal: !this.state.roleEditModal });
+  }
+  toggleRoleDeleteModal = () => {
+    this.setState({ roleDeleteModal: !this.state.roleDeleteModal });
   }
   componentDidMount() {
     const { id } = this.props.match.params;
@@ -136,7 +142,7 @@ class Section extends React.Component {
       <div>
 
         <EditorRole sectionId={this.props.match.params.id} isOpen={this.state.roleEditModal} toggleModal={this.toggleRoleEditModal} />
-
+        < DeleteRole sectionId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal} />
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -176,6 +182,14 @@ class Section extends React.Component {
                           <FontAwesomeIcon icon={faChartBar} />
                         </span>
                         Thống kê
+                      </li>
+                    </Link>
+                    <Link onClick={() => this.toggleRoleDeleteModal()}>
+                      <li>
+                        <span className="icon">
+                          <FontAwesomeIcon icon={faCut} />
+                        </span>
+                        Xóa mục
                       </li>
                     </Link>
                   </ul>

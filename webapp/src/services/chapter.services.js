@@ -32,10 +32,23 @@ const editChapter = (data, id) => {
         });
 };
 
-
+const deleteChapter = (id) => {
+    const url = app.API_URL + `/chapter/delete?id=` + id;
+    const request = new Request(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.token,
+      },
+    });
+    return fetch(request).then(response => {
+      return response.json();
+    });
+  };
 const chapterAPI = {
     createChapter,
-    editChapter
+    editChapter,
+    deleteChapter
 }
 
 export default chapterAPI;

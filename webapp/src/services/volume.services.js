@@ -32,10 +32,24 @@ const editVolume = (databook, id) => {
         });
 };
 
-
+const deleteVolume = (id) => {
+    const url = app.API_URL + `/volume/delete?id=` + id;
+    const request = new Request(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        token: localStorage.token,
+      },
+    });
+    return fetch(request).then(response => {
+      return response.json();
+    });
+  };
 const volumeAPI = {
     createVolume,
-    editVolume
+    editVolume,
+    deleteVolume
+
 }
 
 export default volumeAPI;
