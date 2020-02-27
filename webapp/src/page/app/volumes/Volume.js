@@ -11,11 +11,12 @@ import {
   faChartBar,
   faChevronDown,
   faEdit,
-  faCut
+  faCut,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import language from "../../../config/language";
-import DeleteRole from "./DeleteRole";
+import DeleteRoleItem from "../DeleteRoleItem";
 class Volume extends React.Component {
   constructor(props) {
     super(props);
@@ -23,11 +24,17 @@ class Volume extends React.Component {
       data: [],
       filter: "",
       loaded: false,
-      list: []
+      list: [],
+      Api : "volume",
+      item : "quyển",
     };
   }
+ 
   toggleRoleDeleteModal = () => {
     this.setState({ roleDeleteModal: !this.state.roleDeleteModal });
+  }
+  isBack =()=>{
+    this.props.history.push("/dashboard/books/");
   }
   componentDidMount() {
     analyticsAPI.getVolume(this.props.match.params.id).then(object => {
@@ -104,7 +111,7 @@ class Volume extends React.Component {
     ];
     return (
       <div>
-        < DeleteRole volumeId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal} />
+        < DeleteRoleItem volumeId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal}  Api = {this.state.Api} item={this.state.item} Back={ this.isBack}/>
 
         <div className="qc-content qc-card">
           <div className="qc-card-header">
@@ -161,7 +168,7 @@ class Volume extends React.Component {
                     <Link onClick={() => this.toggleRoleDeleteModal()}>
                       <li>
                         <span className="icon">
-                          <FontAwesomeIcon icon={faCut} />
+                          <FontAwesomeIcon icon={faTrash} />
                         </span>
                         Xóa quyển
                       </li>

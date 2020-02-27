@@ -11,11 +11,11 @@ import {
   faChartBar,
   faChevronDown,
   faEdit,
-  faCut
+  faCut,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
-import DeleteRole from "./DeleteRole";
-
+import DeleteRoleItem from "../DeleteRoleItem";
 
 class Chapter extends React.Component {
   constructor(props) {
@@ -24,11 +24,17 @@ class Chapter extends React.Component {
       data: [],
       filter: "",
       loaded: false,
-      list: []
+      list: [],
+      Api : "chapter",
+      item : "chương",
     };
   }
   toggleRoleDeleteModal = () => {
     this.setState({ roleDeleteModal: !this.state.roleDeleteModal });
+  }
+  isBack =()=>{
+    //var bookId = this.props.match.params.name;
+    this.props.history.push("/dashboard/books/");
   }
   componentDidMount() {
     analyticsAPI.getChapter(this.props.match.params.id).then(object => {
@@ -141,7 +147,7 @@ class Chapter extends React.Component {
     ];
     return (
       <div>
-        < DeleteRole chapterId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal} />
+        < DeleteRoleItem volumeId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal}  Api = {this.state.Api} item={this.state.item} Back={this.isBack}/>
 
         <div className="qc-content qc-card">
           <div className="qc-card-header">
@@ -195,7 +201,7 @@ class Chapter extends React.Component {
                     <Link onClick={() => this.toggleRoleDeleteModal()}>
                       <li>
                         <span className="icon">
-                          <FontAwesomeIcon icon={faCut} />
+                          <FontAwesomeIcon icon={faTrash} />
                         </span>
                         Xóa chương
                       </li>

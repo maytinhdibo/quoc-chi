@@ -96,7 +96,7 @@ const deleteVolume = async (req, res) => {
         { type: db.sequelize.QueryTypes.DELETE }
       );
       await db.sequelize.query(
-        `DELETE FROM sections_drafts WHERE EXISTS ( select * from sections WHERE EXISTS ( select * from chapters WHERE sections.chapter_id= chapters.id and chapters.volume_id = ` + volumeId + `) and sections_drafts.section_id = sections.id)`,
+        `DELETE FROM section_drafts WHERE EXISTS ( select * from sections WHERE EXISTS ( select * from chapters WHERE sections.chapter_id= chapters.id and chapters.volume_id = ` + volumeId + `) and section_drafts.section_id = sections.id)`,
         { type: db.sequelize.QueryTypes.DELETE }
       );
       await db.sequelize.query(

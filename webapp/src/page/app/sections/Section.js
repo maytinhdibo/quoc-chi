@@ -11,14 +11,14 @@ import {
   faChevronDown,
   faEdit,
   faUserEdit,
-  faCut
+  faCut,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import duplicateAPI from "../../../services/duplicate.services";
 import language from "../../../config/language";
 import EditorRole from "./components/EditorRole";
-import DeleteRole from "./components/DeleteRole";
-
+import DeleteRoleItem from "../DeleteRoleItem";
 class Section extends React.Component {
   constructor(props) {
     super(props);
@@ -29,7 +29,9 @@ class Section extends React.Component {
       loaded: false,
       list: [],
       roleEditModal: false,
-      roleDeleteModal : false
+      roleDeleteModal : false,
+      Api : "section",
+      item : "mục",
     };
   }
   toggleRoleEditModal = () => {
@@ -37,6 +39,10 @@ class Section extends React.Component {
   }
   toggleRoleDeleteModal = () => {
     this.setState({ roleDeleteModal: !this.state.roleDeleteModal });
+  }
+  isBack =()=>{
+    //var bookId = this.props.match.params.name;
+    this.props.history.push("/dashboard/books/");
   }
   componentDidMount() {
     const { id } = this.props.match.params;
@@ -142,7 +148,7 @@ class Section extends React.Component {
       <div>
 
         <EditorRole sectionId={this.props.match.params.id} isOpen={this.state.roleEditModal} toggleModal={this.toggleRoleEditModal} />
-        < DeleteRole sectionId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal} />
+        < DeleteRoleItem volumeId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal}  Api = {this.state.Api} item={this.state.item} Back={this.isBack}/>
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -187,7 +193,7 @@ class Section extends React.Component {
                     <Link onClick={() => this.toggleRoleDeleteModal()}>
                       <li>
                         <span className="icon">
-                          <FontAwesomeIcon icon={faCut} />
+                          <FontAwesomeIcon icon={faTrash} />
                         </span>
                         Xóa mục
                       </li>

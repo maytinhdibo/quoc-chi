@@ -45,10 +45,11 @@ const deleteVolume = (id) => {
       return response.json();
     });
   };
+
 const volumeAPI = {
     createVolume,
     editVolume,
-    deleteVolume
+    deleteVolume,
 
 }
 
