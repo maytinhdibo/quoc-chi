@@ -12,13 +12,13 @@ import volumeAPI from '../../services/volume.services';
 import chapterAPI from '../../services/chapter.services';
 import sectionAPI from '../../services/section.services';
 
-class DeleteRoleItem extends React.Component {
+class DeleteItem extends React.Component {
     constructor(props) {
         super(props);
     }
     deleteItem = () => {
         //Console.log(this.props.item);
-        switch (this.props.Api) {
+        switch (this.props.type) {
             case "volume": {
                 volumeAPI.deleteVolume(this.props.volumeId).then(() => {
                     alertText("Xóa thành công");
@@ -39,6 +39,7 @@ class DeleteRoleItem extends React.Component {
                 ).catch(e => {
                     alertText(e.message)
                 })
+                break;
             }
             case "section":{
                 sectionAPI.deleteSection(this.props.sectionId).then(()=>{
@@ -49,6 +50,7 @@ class DeleteRoleItem extends React.Component {
                 ).catch(e => {
                     alertText(e.message)
                 })
+                break;
             }
         }
 
@@ -90,4 +92,4 @@ class DeleteRoleItem extends React.Component {
         )
     }
 }
-export default DeleteRoleItem;
+export default DeleteItem;

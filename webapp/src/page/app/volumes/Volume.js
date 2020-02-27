@@ -16,7 +16,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import language from "../../../config/language";
-import DeleteRoleItem from "../DeleteRoleItem";
+import DeleteItem from "../DeleteItem";
+
 class Volume extends React.Component {
   constructor(props) {
     super(props);
@@ -25,16 +26,17 @@ class Volume extends React.Component {
       filter: "",
       loaded: false,
       list: [],
-      Api : "volume",
+      type : "volume",
       item : "quyển",
     };
   }
  
-  toggleRoleDeleteModal = () => {
-    this.setState({ roleDeleteModal: !this.state.roleDeleteModal });
+  toggleDeleteModal = () => {
+    this.setState({ DeleteModal: !this.state.DeleteModal });
   }
   isBack =()=>{
-    this.props.history.push("/dashboard/books/");
+    const path1 = localStorage.role && JSON.parse(localStorage.role).path;
+    this.props.history.push("/dashboard"+ path1);
   }
   componentDidMount() {
     analyticsAPI.getVolume(this.props.match.params.id).then(object => {
@@ -111,7 +113,7 @@ class Volume extends React.Component {
     ];
     return (
       <div>
-        < DeleteRoleItem volumeId ={this.props.match.params.id} isOpen={this.state.roleDeleteModal} toggleModal={this.toggleRoleDeleteModal}  Api = {this.state.Api} item={this.state.item} Back={ this.isBack}/>
+        < DeleteItem volumeId ={this.props.match.params.id} isOpen={this.state.DeleteModal} toggleModal={this.toggleDeleteModal}  type = {this.state.type} item={this.state.item} Back={ this.isBack}/>
 
         <div className="qc-content qc-card">
           <div className="qc-card-header">
@@ -165,7 +167,7 @@ class Volume extends React.Component {
                         Thống kê
                       </li>
                     </Link>
-                    <Link onClick={() => this.toggleRoleDeleteModal()}>
+                    <Link onClick={() => this.toggleDeleteModal()}>
                       <li>
                         <span className="icon">
                           <FontAwesomeIcon icon={faTrash} />
