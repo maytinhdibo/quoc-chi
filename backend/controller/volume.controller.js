@@ -78,9 +78,52 @@ const editVolume = async (req, res) => {
         res.json(response.fail(e.message));
     }
 }
-
+const deleteVolume = async (req, res) => {
+    try {
+      let volumeId = req.query.id;
+  
+      db.users_volume.destroy({
+        where: {
+          volume_id: volumeId
+        }
+      })
+      await db.sequelize.query(
+        `DELETE FROM sections_logs WHERE EXISTS ( select * from sections WHERE EXISTS ( select * from chapters WHERE sections.chapter_id= chapters.id and chapters.volume_id = ` + volumeId + `) and sections_logs.section_id = sections.id)`,
+        { type: db.sequelize.QueryTypes.DELETE }
+      );
+      await db.sequelize.query(
+        `DELETE FROM sections_users WHERE EXISTS ( select * from sections WHERE EXISTS ( select * from chapters WHERE sections.chapter_id= chapters.id and chapters.volume_id = ` + volumeId + `) and sections_users.section_id = sections.id)`,
+        { type: db.sequelize.QueryTypes.DELETE }
+      );
+      await db.sequelize.query(
+        `DELETE FROM section_drafts WHERE EXISTS ( select * from sections WHERE EXISTS ( select * from chapters WHERE sections.chapter_id= chapters.id and chapters.volume_id = ` + volumeId + `) and section_drafts.section_id = sections.id)`,
+        { type: db.sequelize.QueryTypes.DELETE }
+      );
+      await db.sequelize.query(
+        `DELETE FROM sections where EXISTS ( select * from chapters where sections.chapter_id = chapters.id and chapters.volume_id =  ` + volumeId + `)`,
+        { type: db.sequelize.QueryTypes.DELETE }
+      );
+  
+      db.chapter.destroy({
+        where: {
+          volume_id: volumeId
+        }
+      })
+      db.volume.destroy({
+        where: {
+          id: volumeId
+        }
+      })
+  
+      res.json(response.success());
+    }
+    catch (e) {
+      res.json(response.fail(e.message));
+    }
+  }
 
 module.exports = {
     newVolume,
-    editVolume
+    editVolume,
+    deleteVolume
 }

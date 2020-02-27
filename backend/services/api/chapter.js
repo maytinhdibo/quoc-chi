@@ -6,5 +6,5 @@ const controller = require('../../controller/chapter.controller')
 
 router.post("/new", controller.newChapter);
 router.post("/edit", controller.editChapter);
-
+router.delete("/delete", controller.deleteChapter);
 module.exports = router;

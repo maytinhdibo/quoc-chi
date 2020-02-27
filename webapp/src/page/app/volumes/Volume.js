@@ -10,10 +10,13 @@ import {
   faFilePdf,
   faChartBar,
   faChevronDown,
-  faEdit
+  faEdit,
+  faCut,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import language from "../../../config/language";
+import DeleteItem from "../DeleteItem";
 
 class Volume extends React.Component {
   constructor(props) {
@@ -22,8 +25,18 @@ class Volume extends React.Component {
       data: [],
       filter: "",
       loaded: false,
-      list: []
+      list: [],
+      type : "volume",
+      item : "quyển",
     };
+  }
+ 
+  toggleDeleteModal = () => {
+    this.setState({ DeleteModal: !this.state.DeleteModal });
+  }
+  isBack =()=>{
+    const path1 = localStorage.role && JSON.parse(localStorage.role).path;
+    this.props.history.push("/dashboard"+ path1);
   }
   componentDidMount() {
     analyticsAPI.getVolume(this.props.match.params.id).then(object => {
@@ -100,6 +113,8 @@ class Volume extends React.Component {
     ];
     return (
       <div>
+        < DeleteItem volumeId ={this.props.match.params.id} isOpen={this.state.DeleteModal} toggleModal={this.toggleDeleteModal}  type = {this.state.type} item={this.state.item} Back={ this.isBack}/>
+
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -150,6 +165,14 @@ class Volume extends React.Component {
                           <FontAwesomeIcon icon={faChartBar} />
                         </span>
                         Thống kê
+                      </li>
+                    </Link>
+                    <Link onClick={() => this.toggleDeleteModal()}>
+                      <li>
+                        <span className="icon">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </span>
+                        Xóa quyển
                       </li>
                     </Link>
                   </ul>

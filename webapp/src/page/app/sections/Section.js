@@ -10,13 +10,15 @@ import {
   faChartBar,
   faChevronDown,
   faEdit,
-  faUserEdit
+  faUserEdit,
+  faCut,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
 import duplicateAPI from "../../../services/duplicate.services";
 import language from "../../../config/language";
 import EditorRole from "./components/EditorRole";
-
+import DeleteItem from "../DeleteItem";
 class Section extends React.Component {
   constructor(props) {
     super(props);
@@ -26,11 +28,21 @@ class Section extends React.Component {
       filter: "",
       loaded: false,
       list: [],
-      roleEditModal: false
+      roleEditModal: false,
+      DeleteModal : false,
+      type : "section",
+      item : "mục",
     };
   }
   toggleRoleEditModal = () => {
     this.setState({ roleEditModal: !this.state.roleEditModal });
+  }
+  toggleDeleteModal = () => {
+    this.setState({ DeleteModal: !this.state.DeleteModal });
+  }
+  isBack =()=>{
+    const path1 = localStorage.role && JSON.parse(localStorage.role).path;
+    this.props.history.push("/dashboard"+ path1);
   }
   componentDidMount() {
     const { id } = this.props.match.params;
@@ -136,7 +148,7 @@ class Section extends React.Component {
       <div>
 
         <EditorRole sectionId={this.props.match.params.id} isOpen={this.state.roleEditModal} toggleModal={this.toggleRoleEditModal} />
-
+        < DeleteItem sectionId ={this.props.match.params.id} isOpen={this.state.DeleteModal} toggleModal={this.toggleDeleteModal} type = {this.state.type} item={this.state.item} Back={this.isBack}/>
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -176,6 +188,14 @@ class Section extends React.Component {
                           <FontAwesomeIcon icon={faChartBar} />
                         </span>
                         Thống kê
+                      </li>
+                    </Link>
+                    <Link onClick={() => this.toggleDeleteModal()}>
+                      <li>
+                        <span className="icon">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </span>
+                        Xóa mục
                       </li>
                     </Link>
                   </ul>

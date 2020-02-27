@@ -408,8 +408,44 @@ const editEditors = async (req, res) => {
     res.json(response.fail(e.message));
   }
 };
+const deleteSectionDraft= async  (req, res) => {
+  try{
+    let sectionId = req.query.id;
+    db.sections_user.destroy({
+      where: {
+        section_id: sectionId
+      }
+    })
+    db.section_draft.destroy({
+      where: {
+        section_id: sectionId
+      }
+    })
+
+    // db.sections_docs_log.destroy({
+    //   where: {
+    //       section_id: sectionId
+    //   }
+    // })
+    db.sections_log.destroy({
+      where: {
+        section_id: sectionId
+      }
+    })
+    db.section.destroy({
+      where: {
+        id : sectionId
+      }
+    })
+    res.json(response.success());
+  }
+  catch(e){
+    res.json(response.fail(e.message));
+  }
+}
 
 module.exports = {
+  deleteSectionDraft,
   newSection,
   publishSection,
   getListDraft,

@@ -14,5 +14,6 @@ router.post("/draft/edit", auth.verifyAccessToken, roleSection.isEditableSection
 
 router.get("/editors", auth.verifyAccessToken, controller.getEditors);
 router.post("/editors/edit", auth.verifyAccessToken, controller.editEditors);
+router.delete("/delete", controller.deleteSectionDraft);
 
 module.exports = router;

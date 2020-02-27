@@ -117,7 +117,19 @@ const editEditors = (id, data) => {
     return response.json();
   });
 };
-
+const deleteSection = (id) => {
+  const url = app.API_URL + `/section/delete?id=` + id;
+  const request = new Request(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      token: localStorage.token,
+    },
+  });
+  return fetch(request).then(response => {
+    return response.json();
+  });
+};
 const sectionAPI = {
   newSection,
   publishSection,
@@ -126,7 +138,8 @@ const sectionAPI = {
   saveDraft,
   getEditableVersion,
   getEditors,
-  editEditors
+  editEditors,
+  deleteSection
 };
 
 export default sectionAPI;

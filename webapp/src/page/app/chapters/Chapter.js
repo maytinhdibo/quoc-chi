@@ -10,9 +10,12 @@ import {
   faFilePdf,
   faChartBar,
   faChevronDown,
-  faEdit
+  faEdit,
+  faCut,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import analyticsAPI from "../../../services/analytics.services";
+import DeleteItem from "../DeleteItem";
 
 class Chapter extends React.Component {
   constructor(props) {
@@ -21,8 +24,17 @@ class Chapter extends React.Component {
       data: [],
       filter: "",
       loaded: false,
-      list: []
+      list: [],
+      type : "chapter",
+      item : "chương",
     };
+  }
+  toggleDeleteModal = () => {
+    this.setState({ DeleteModal: !this.state.DeleteModal });
+  }
+  isBack =()=>{
+    const path1 = localStorage.role && JSON.parse(localStorage.role).path;
+    this.props.history.push("/dashboard"+ path1);
   }
   componentDidMount() {
     analyticsAPI.getChapter(this.props.match.params.id).then(object => {
@@ -135,6 +147,8 @@ class Chapter extends React.Component {
     ];
     return (
       <div>
+        < DeleteItem chapterId ={this.props.match.params.id} isOpen={this.state.DeleteModal} toggleModal={this.toggleDeleteModal}  type = {this.state.type} item={this.state.item} Back={this.isBack}/>
+
         <div className="qc-content qc-card">
           <div className="qc-card-header">
             <span className="qc-header-title">
@@ -182,6 +196,14 @@ class Chapter extends React.Component {
                           <FontAwesomeIcon icon={faChartBar} />
                         </span>
                         Thống kê
+                      </li>
+                    </Link>
+                    <Link onClick={() => this.toggleDeleteModal()}>
+                      <li>
+                        <span className="icon">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </span>
+                        Xóa chương
                       </li>
                     </Link>
                   </ul>
