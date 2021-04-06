@@ -15,7 +15,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^12.1.3",
     "@ckeditor/ckeditor5-editor-decoupled": "^12.2.2",
     "@ckeditor/ckeditor5-essentials": "^11.0.4",
-    "@ckeditor/ckeditor5-font": "^11.2.0",
+    "@ckeditor/ckeditor5-font": "^27.0.0",
     "@ckeditor/ckeditor5-heading": "^11.0.3",
     "@ckeditor/ckeditor5-highlight": "^11.0.3",
     "@ckeditor/ckeditor5-image": "^13.1.1",
